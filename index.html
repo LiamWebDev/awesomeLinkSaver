@@ -8,23 +8,40 @@
 
 <style>
     body { width: 100%; max-width: 1600px; margin: auto;}
-    header { height: 80px; background-color: #b5b5b5;}
-    input { width: 400px; height: 40px; border-radius: 25px; border: 2px solid #312d3c; font-size: 20px; padding-left: 13px; font-family: verdana; }
+    header { height: 80px; background-color: #b5b5b5; display: flex; justify-content: center; }
+    div.hdr-btn {width: 33%; text-align: center; font-family: verdana;}
+    #acc-icon {}
+    input { width: 900px; height: 40px; border-radius: 25px; border: 2px solid #312d3c; font-size: 18px; padding-left: 13px; font-family: verdana; }
     #input {display: flex; align-items: center; justify-content: center; top: 100px; position: relative; }
 </style>
 
 </head>
 <body>
     <header>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div><img src="/account-icon.png"></div>
+        <div class="hdr-btn">Courses</div>
+        <div class="hdr-btn">LinkSaver</div>
+        <div class="hdr-btn">Path</div>
+        <div id="acc-icon"><img src="/account-icon.png"></div>
     </header>
 <section>
     <div id="input">
-    <input name="link-input">
+    <input id="link-input" name="link-input" autofocus>
     </div>
 </section>
+
+<script>
+function setFocusLinkInput(){
+    document.getElementById("link-input").focus();
+}
+
+const target = document.querySelector('input#link-input');
+
+target.addEventListener('paste', (event) => {
+    let paste = (event.clipboardData).getData('text');
+    console.log(paste);
+});
+
+
+</script>
 </body>
 </html>
