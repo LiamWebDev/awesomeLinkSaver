@@ -7,12 +7,16 @@
     <title>Link Saver</title>
 
 <style>
-    body { width: 100%; max-width: 1600px; margin: auto;}
+    body { width: 100%; max-width: 1600px; margin: auto; }
     header { height: 80px; background-color: #b5b5b5; display: flex; justify-content: center; }
-    div.hdr-btn {width: 33%; text-align: center; font-family: verdana;}
+    div.hdr-btn { width: 33%; text-align: center; font-family: verdana; }
     #acc-icon {}
     input { width: 900px; height: 40px; border-radius: 25px; border: 2px solid #312d3c; font-size: 18px; padding-left: 13px; font-family: verdana; }
-    #input {display: flex; align-items: center; justify-content: center; top: 100px; position: relative; }
+    #input { display: flex; align-items: center; justify-content: center; top: 100px; position: relative; }
+    #tags { display: flex; align-items: center; justify-content: center; top: 80px; position: relative; }
+    .tag { padding: 0px 18px; background-color:bisque; margin: 0px 5px; border-radius: 15px; height: 27px; font-size: 20px; cursor: pointer; }
+    .tagged { background-color:chocolate; }
+    .plus { background-color: skyblue; margin: 4px; padding: 4px; border-radius: 10px; cursor: pointer;}
 </style>
 
 </head>
@@ -23,24 +27,42 @@
         <div class="hdr-btn">Path</div>
         <div id="acc-icon"><img src="/account-icon.png"></div>
     </header>
-<section>
+
+    <div id="tags">
+                
+    </div>
+
     <div id="input">
     <input id="link-input" name="link-input" autofocus>
     </div>
-</section>
 
 <script>
+
 function setFocusLinkInput(){
     document.getElementById("link-input").focus();
 }
 
-const target = document.querySelector('input#link-input');
+function setTagged(button){
+    button.classList.toggle('tagged');
+}
 
-target.addEventListener('paste', (event) => {
+function join() {
+// not yet done
+}
+
+const LinkInput = document.querySelector('input#link-input');
+
+LinkInput.addEventListener('paste', (event) => {
     let paste = (event.clipboardData).getData('text');
-    console.log(paste);
+    let re = /\w+/g;
+    regArray = paste.match(re);
+    for (var i = 0; i < regArray.length; i++) {
+    tagDiv = "<div class=\"tag\" onclick=\"setTagged(this)\">" + regArray[i] + "</div>"
+    plusses = "<div class=\"plus\" onclick=\"join()\">" + "+" + "</div>"
+    document.getElementById("tags").innerHTML+=tagDiv;
+    document.getElementById("tags").innerHTML+=plusses;
+}
 });
-
 
 </script>
 </body>
