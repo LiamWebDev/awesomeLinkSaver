@@ -13,12 +13,16 @@ function join(event) {
   previousTag.innerHTML += " " + nextTagText;
   nextTag.parentNode.removeChild(nextTag);
   event.target.parentNode.removeChild(event.target);
+  document.getElementById("undo-img").style.display = "block";
 }
 
 const LinkInput = document.querySelector("input#link-input");
 
 LinkInput.addEventListener("paste", (event) => {
-  let paste = event.clipboardData.getData("text");
+  createTags(event);
+});
+
+function pasteRegEx(paste) {
   let re = /\w+/g;
   regArray = paste.match(re);
   for (var i = 0; i < regArray.length; i++) {
@@ -35,4 +39,23 @@ LinkInput.addEventListener("paste", (event) => {
       join(e);
     });
   });
-});
+}
+
+function createTags(event) {
+  let paste = event.clipboardData.getData("text");
+  pasteRegEx(paste);
+}
+
+function removeAllChildNodes(parent) {
+  while (parent.firstChild) {
+    parent.removeChild(parent.firstChild);
+  }
+}
+
+function undo() {
+  parent = document.getElementById("tags");
+  removeAllChildNodes(parent);
+  inputValue = LinkInput.value;
+  pasteRegEx(inputValue);
+  document.getElementById("undo-img").style.display = "none";
+}
