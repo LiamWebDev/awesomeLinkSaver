@@ -1,10 +1,82 @@
-body { width: 100%; max-width: 1600px; margin: auto; }
-    header { height: 45px; background-color: #b5b5b5; display: flex; justify-content: center; }
-    div.hdr-btn { width: 33%; text-align: center; font-family: verdana; }
-    #acc-icon img {height: 36px; padding: 5px 10px;}
-    input { width: 900px; height: 40px; border-radius: 25px; border: 2px solid #312d3c; font-size: 18px; padding-left: 13px; font-family: verdana; }
-    #input { display: flex; align-items: center; justify-content: center; top: 100px; position: relative; }
-    #tags { display: flex; align-items: center; justify-content: center; top: 80px; position: relative; }
-    .tag { padding: 0px 18px; background-color:bisque; margin: 0px 5px; border-radius: 15px; height: 27px; font-size: 20px; cursor: pointer; }
-    .tagged { background-color:chocolate; }
-    .plus { background-color: skyblue; margin: 4px; padding: 4px; border-radius: 10px; cursor: pointer;}
+body {
+  width: 100%;
+  max-width: 1600px;
+  margin: auto;
+}
+header {
+  height: 45px;
+  background-color: #b5b5b5;
+  display: flex;
+  justify-content: center;
+}
+div.hdr-btn {
+  width: 33%;
+  text-align: center;
+  font-family: verdana;
+}
+#acc-icon img {
+  height: 36px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+input {
+  width: 900px;
+  height: 40px;
+  border-radius: 25px;
+  border: 2px solid #312d3c;
+  font-size: 18px;
+  padding-left: 13px;
+  font-family: verdana;
+}
+#input {
+  display: flex;
+  align-items: center;
+  top: 100px;
+  position: relative;
+}
+#tags {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 80px;
+  position: relative;
+}
+.tag {
+  padding: 0px 18px;
+  background-color: bisque;
+  margin: 0px 5px;
+  border-radius: 15px;
+  height: 27px;
+  font-size: 20px;
+  cursor: pointer;
+}
+.tagged {
+  background-color: chocolate;
+}
+.plus {
+  background-color: skyblue;
+  margin: 4px;
+  padding: 4px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+#input-line {
+  display: flex;
+  justify-content: center;
+}
+
+#undo {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  top: 100px;
+  position: relative;
+}
+
+#undo-img {
+  height: 38px;
+  margin-left: 10px;
+  margin-bottom: 5px;
+  display: none;
+}
