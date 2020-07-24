@@ -16,11 +16,15 @@ function join(event) {
   document.getElementById("undo-img").style.display = "block";
 }
 
-const LinkInput = document.querySelector("input#link-input");
+const linkInput = document.querySelector("input#link-input");
+const tagsParent = document.getElementById("tags");
 
-LinkInput.addEventListener("paste", (event) => {
+linkInput.addEventListener("paste", (event) => {
   let url = event.clipboardData.getData("text");
+  removeAllChildNodes(tagsParent);
   createTags(url);
+  document.getElementById("submit-btn").style.display = "block";
+  document.getElementById("clear").style.display = "flex";
 });
 
 function createTags(paste) {
@@ -49,9 +53,19 @@ function removeAllChildNodes(parent) {
 }
 
 function undo() {
-  parent = document.getElementById("tags");
-  removeAllChildNodes(parent);
-  inputValue = LinkInput.value;
+  removeAllChildNodes(tagsParent);
+  inputValue = linkInput.value;
   createTags(inputValue);
   document.getElementById("undo-img").style.display = "none";
+}
+
+function clearField() {
+  removeAllChildNodes(tagsParent);
+  document.getElementById("submit-btn").style.display = "none";
+  document.getElementById("clear").style.display = "none";
+  linkInput.value = "";
+  setFocusLinkInput();
+  if ((document.getElementById("undo-img").style.display = "block")) {
+    document.getElementById("undo-img").style.display = "none";
+  }
 }
