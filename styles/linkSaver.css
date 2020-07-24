@@ -80,3 +80,40 @@ input {
   margin-bottom: 5px;
   display: none;
 }
+
+#submit-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 155px;
+  position: relative;
+}
+
+#submit-btn button {
+  height: 40px;
+  width: 200px;
+  font-family: verdana;
+  font-size: 20px;
+  border-radius: 11px;
+  background: #db3941;
+  box-shadow: 2px 4px #a12f34;
+  border: none;
+  color: #fff;
+  transition: none;
+  cursor: pointer;
+}
+
+#submit-btn button::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  -webkit-transition: all 0.3s;
+  -moz-transition: all 0.3s;
+  transition: all 0.3s;
+}
+
+#submit-btn button:active {
+  box-shadow: 0px 0px #a12f34;
+  position: relative;
+  top: 5px;
+}

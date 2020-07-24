@@ -19,10 +19,11 @@ function join(event) {
 const LinkInput = document.querySelector("input#link-input");
 
 LinkInput.addEventListener("paste", (event) => {
-  createTags(event);
+  let url = event.clipboardData.getData("text");
+  createTags(url);
 });
 
-function pasteRegEx(paste) {
+function createTags(paste) {
   let re = /\w+/g;
   regArray = paste.match(re);
   for (var i = 0; i < regArray.length; i++) {
@@ -41,11 +42,6 @@ function pasteRegEx(paste) {
   });
 }
 
-function createTags(event) {
-  let paste = event.clipboardData.getData("text");
-  pasteRegEx(paste);
-}
-
 function removeAllChildNodes(parent) {
   while (parent.firstChild) {
     parent.removeChild(parent.firstChild);
@@ -56,6 +52,6 @@ function undo() {
   parent = document.getElementById("tags");
   removeAllChildNodes(parent);
   inputValue = LinkInput.value;
-  pasteRegEx(inputValue);
+  createTags(inputValue);
   document.getElementById("undo-img").style.display = "none";
 }
