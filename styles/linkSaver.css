@@ -25,7 +25,7 @@ div.hdr-btn {
   padding: 5px 10px;
   cursor: pointer;
 }
-input {
+#input input {
   width: 900px;
   height: 40px;
   border-radius: 25px;
@@ -135,4 +135,57 @@ input {
   font-family: verdana;
   cursor: pointer;
   display: none;
+}
+
+#tiles {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  top: 250px;
+}
+
+.tile {
+  background-color: #fff;
+  height: 200px;
+  width: 240px;
+  margin: 0px 40px;
+  border-radius: 20px;
+}
+
+.title {
+  position: relative;
+  display: block;
+  top: 0px;
+  text-align: center;
+  font-size: 20px;
+  font-family: verdana;
+}
+
+.title a {
+  text-decoration: none;
+}
+
+#title-input {
+  display: none;
+  justify-content: center;
+  top: 120px;
+  position: relative;
+}
+
+#title-input input {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  width: 400px;
+}
+
+#title-input label {
+  display: flex;
+  align-items: center;
+  font-size: 21px;
+  font-family: verdana;
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin-right: 14px;
 }

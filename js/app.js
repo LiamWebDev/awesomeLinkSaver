@@ -2,6 +2,10 @@ function setFocusLinkInput() {
   document.getElementById("link-input").focus();
 }
 
+function setFocusTitleInput() {
+  document.getElementById("tile-title").focus();
+}
+
 function setTagged(button) {
   button.classList.toggle("tagged");
 }
@@ -17,6 +21,7 @@ function join(event) {
 }
 
 const linkInput = document.querySelector("input#link-input");
+const titleInput = document.querySelector("input#tile-title");
 const tagsParent = document.getElementById("tags");
 
 linkInput.addEventListener("paste", (event) => {
@@ -25,6 +30,8 @@ linkInput.addEventListener("paste", (event) => {
   createTags(url);
   document.getElementById("submit-btn").style.display = "block";
   document.getElementById("clear").style.display = "flex";
+  document.getElementById("title-input").style.display = "flex";
+  setFocusTitleInput();
 });
 
 function createTags(paste) {
@@ -59,13 +66,35 @@ function undo() {
   document.getElementById("undo-img").style.display = "none";
 }
 
-function clearField() {
+function clearFields() {
   removeAllChildNodes(tagsParent);
   document.getElementById("submit-btn").style.display = "none";
   document.getElementById("clear").style.display = "none";
   linkInput.value = "";
   setFocusLinkInput();
+  document.getElementById("title-input").style.display = "none";
   if ((document.getElementById("undo-img").style.display = "block")) {
     document.getElementById("undo-img").style.display = "none";
   }
+}
+
+function createTile() {
+  urlValue = linkInput.value;
+  titleValue = titleInput.value;
+  tileDiv =
+    '<div class="tile-container"><a href="' +
+    urlValue +
+    '" target="_blank"><div class="tile"></div></a><div class="title"><a href=" ' +
+    urlValue +
+    '" target="_blank"><p>' +
+    titleValue +
+    "</p></a></div></div>";
+  document.getElementById("tiles").innerHTML += tileDiv;
+}
+
+function submit() {
+  createTile();
+  clearFields();
+  titleInput.value = "";
+  document.getElementById("title-input").style.display = "none";
 }
