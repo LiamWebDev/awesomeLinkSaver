@@ -108,6 +108,8 @@ function pathIntoTitleInput(paste) {
   let reg2 = /\w+/g;
   titleArray = pathArr[1].match(reg2);
   for (var i = 0; i < titleArray.length; i++) {
-    titleInput.value += titleArray[i] + " ";
+    titleCapitalArray =
+      titleArray[i][0].toUpperCase() + titleArray[i].substr(1);
+    titleInput.value += titleCapitalArray + " ";
   }
 }
