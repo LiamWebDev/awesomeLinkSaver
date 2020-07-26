@@ -27,10 +27,12 @@ const tagsParent = document.getElementById("tags");
 linkInput.addEventListener("paste", (event) => {
   let url = event.clipboardData.getData("text");
   removeAllChildNodes(tagsParent);
+  titleInput.value = "";
   createTags(url);
   document.getElementById("submit-btn").style.display = "block";
   document.getElementById("clear").style.display = "flex";
   document.getElementById("title-input").style.display = "flex";
+  pathIntoTitleInput(url);
   setFocusTitleInput();
 });
 
@@ -97,4 +99,15 @@ function submit() {
   clearFields();
   titleInput.value = "";
   document.getElementById("title-input").style.display = "none";
+  setFocusLinkInput();
+}
+
+function pathIntoTitleInput(paste) {
+  let reg1 = /\/([^\/]+)\/?$/;
+  pathArr = paste.match(reg1);
+  let reg2 = /\w+/g;
+  titleArray = pathArr[1].match(reg2);
+  for (var i = 0; i < titleArray.length; i++) {
+    titleInput.value += titleArray[i] + " ";
+  }
 }
