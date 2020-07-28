@@ -110,6 +110,12 @@ div.hdr-btn {
   display: none;
 }
 
+#submit-div button:hover {
+  box-shadow: 1px 3px #a12f34;
+  position: relative;
+  top: 1px;
+}
+
 #submit-div button::after {
   content: "";
   position: absolute;
@@ -191,4 +197,24 @@ div.hdr-btn {
   font-weight: 500;
   letter-spacing: 1px;
   margin-right: 14px;
+}
+
+#exist-tags {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 65px;
+  position: relative;
+}
+.exist-tag {
+  padding: 0px 28px;
+  background-color: #de7f78;
+  margin: 0px 5px;
+  border-radius: 15px;
+  height: 30px;
+  font-size: 24px;
+  cursor: pointer;
+}
+.exist-tagged {
+  background-color: #811f18;
 }

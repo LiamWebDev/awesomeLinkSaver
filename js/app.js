@@ -1,3 +1,32 @@
+const STATE = {
+  tags: {
+    https: {
+      urls: "",
+    },
+    loops: {
+      urls: "",
+    },
+    arrays: {
+      urls: "",
+    },
+  },
+  exceptions: ["to", "the", "best"],
+  tiles: [
+    {
+      0: {
+        iD: 1,
+        uRL: "www.reddit.co.uk/example",
+        tags: ["1", "4", "5"],
+      },
+      1: {
+        iD: 2,
+        uRL: "www.medium.com/example",
+        tags: ["1", "4", "5"],
+      },
+    },
+  ],
+};
+
 function setFocusLinkInput() {
   document.getElementById("link-input").focus();
 }
@@ -8,6 +37,10 @@ function setFocusTitleInput() {
 
 function setTagged(button) {
   button.classList.toggle("tagged");
+}
+
+function setExistTagged(button) {
+  button.classList.toggle("exist-tagged");
 }
 
 function join(event) {
@@ -23,6 +56,7 @@ function join(event) {
 const linkInput = document.querySelector("input#link-input");
 const titleInput = document.querySelector("input#tile-title");
 const tagsParent = document.getElementById("tags");
+const existTagsParent = document.getElementById("exist-tags");
 
 linkInput.addEventListener("paste", (event) => {
   let url = event.clipboardData.getData("text");
@@ -39,14 +73,27 @@ linkInput.addEventListener("paste", (event) => {
 function createTags(paste) {
   let re = /\w+/g;
   regArray = paste.match(re);
-  for (var i = 0; i < regArray.length; i++) {
-    tagDiv =
-      '<div class="tag" onclick="setTagged(this)">' + regArray[i] + "</div>";
-    plusses = '<div class="plus">' + "+" + "</div>";
-    document.getElementById("tags").innerHTML += tagDiv;
-    if (i !== regArray.length - 1) {
-      document.getElementById("tags").innerHTML += plusses;
+  let i = 0;
+  for (const tag of regArray) {
+    if (STATE.tags[tag]) {
+      tagDiv =
+        '<div class="exist-tag" onclick="setExistTagged(this)">' +
+        tag +
+        "</div>";
+      document.getElementById("exist-tags").innerHTML += tagDiv;
+      regArray.splice(i, 1, "");
+    } else if (STATE.exceptions.includes(tag)) {
+      regArray.splice(i, 1, "");
+    } else {
+      tagDiv =
+        '<div class="tag" onclick="setTagged(this)">' + regArray[i] + "</div>";
+      plusses = '<div class="plus">' + "+" + "</div>";
+      document.getElementById("tags").innerHTML += tagDiv;
+      if (i !== regArray.length - 1) {
+        document.getElementById("tags").innerHTML += plusses;
+      }
     }
+    i++;
   }
   document.querySelectorAll(".plus").forEach((plusElm) => {
     plusElm.addEventListener("click", (e) => {
@@ -63,6 +110,7 @@ function removeAllChildNodes(parent) {
 
 function undo() {
   removeAllChildNodes(tagsParent);
+  removeAllChildNodes(existTagsParent);
   inputValue = linkInput.value;
   createTags(inputValue);
   document.getElementById("undo-img").style.display = "none";
@@ -70,6 +118,7 @@ function undo() {
 
 function clearFields() {
   removeAllChildNodes(tagsParent);
+  removeAllChildNodes(existTagsParent);
   document.getElementById("submit-btn").style.display = "none";
   document.getElementById("clear").style.display = "none";
   linkInput.value = "";
@@ -108,8 +157,7 @@ function pathIntoTitleInput(paste) {
   let reg2 = /\w+/g;
   titleArray = pathArr[1].match(reg2);
   for (var i = 0; i < titleArray.length; i++) {
-    titleCapitalArray =
-      titleArray[i][0].toUpperCase() + titleArray[i].substr(1);
-    titleInput.value += titleCapitalArray + " ";
+    titleCapitalWord = titleArray[i][0].toUpperCase() + titleArray[i].substr(1);
+    titleInput.value += titleCapitalWord + " ";
   }
 }
