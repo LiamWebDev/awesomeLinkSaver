@@ -14,13 +14,15 @@ const STATE = {
   tiles: [
     {
       0: {
-        iD: 1,
-        uRL: "www.reddit.co.uk/example",
+        id: 1,
+        url: "www.reddit.co.uk/example",
+        title: "Reddit Article",
         tags: ["1", "4", "5"],
       },
       1: {
-        iD: 2,
-        uRL: "www.medium.com/example",
+        id: 2,
+        url: "www.medium.com/example",
+        title: "Medium Article",
         tags: ["1", "4", "5"],
       },
     },
@@ -144,6 +146,7 @@ function createTile() {
 }
 
 function submit() {
+  storeTags();
   createTile();
   clearFields();
   titleInput.value = "";
@@ -159,5 +162,23 @@ function pathIntoTitleInput(paste) {
   for (var i = 0; i < titleArray.length; i++) {
     titleCapitalWord = titleArray[i][0].toUpperCase() + titleArray[i].substr(1);
     titleInput.value += titleCapitalWord + " ";
+  }
+}
+
+function storeTags() {
+  const url = linkInput.value;
+  let newTags = document.getElementsByClassName("tagged");
+  let existTags = document.getElementsByClassName("exist-tag");
+
+  for (var i = 0; i < newTags.length; i++) {
+    newProp = newTags[i].textContent;
+    STATE.tags[newProp] = { urls: `${url}` };
+    console.log(STATE);
+  }
+
+  for (var i = 0; i < existTags.length; i++) {
+    existProp = existTags[i].textContent;
+    STATE.tags[existProp] = { urls: `${url}` };
+    console.log(STATE);
   }
 }
