@@ -1,32 +1,36 @@
 const STATE = {
   tags: {
     https: {
-      urls: "",
+      tiles: ["tile1", "tile3"],
     },
     loops: {
-      urls: "",
+      tiles: ["tile2"],
     },
     arrays: {
-      urls: "",
+      tiles: ["tile2", "tile3"],
     },
   },
   exceptions: ["to", "the", "best"],
-  tiles: [
-    {
-      0: {
-        id: 1,
-        url: "www.reddit.co.uk/example",
-        title: "Reddit Article",
-        tags: ["1", "4", "5"],
-      },
-      1: {
-        id: 2,
-        url: "www.medium.com/example",
-        title: "Medium Article",
-        tags: ["1", "4", "5"],
-      },
+  tiles: {
+    tile1: {
+      id: 1,
+      url: "www.reddit.co.uk/example",
+      title: "Reddit Article",
+      tags: ["https"],
     },
-  ],
+    tile2: {
+      id: 2,
+      url: "www.medium.com/example",
+      title: "Medium Article",
+      tags: ["loops", "arrays"],
+    },
+    tile3: {
+      id: 3,
+      url: "www.youtube.com/video-example",
+      title: "YouTube Video Article",
+      tags: ["https", "arrays"],
+    },
+  },
 };
 
 function setFocusLinkInput() {
@@ -167,18 +171,25 @@ function pathIntoTitleInput(paste) {
 
 function storeTags() {
   const url = linkInput.value;
+  const title = titleInput.value;
   let newTags = document.getElementsByClassName("tagged");
-  let existTags = document.getElementsByClassName("exist-tag");
+  let existTags = document.getElementsByClassName("exist-tagged");
+  //let largerArray = Math.max(newTags.length, existTags.length);
+  let tileNo = Object.keys(STATE.tiles).length + 1;
+  let newTile = "tile" + tileNo;
+
+  STATE.tiles[newTile] = { id: tileNo, url: url, title: title, tags: [] };
 
   for (var i = 0; i < newTags.length; i++) {
-    newProp = newTags[i].textContent;
-    STATE.tags[newProp] = { urls: `${url}` };
-    console.log(STATE);
+    newTagProp = newTags[i].textContent;
+    STATE.tags[newTagProp] = { tiles: [] };
+    STATE.tags[newTagProp].tiles.push(newTile);
+    STATE.tiles[newTile].tags.push(newTagProp);
   }
 
   for (var i = 0; i < existTags.length; i++) {
-    existProp = existTags[i].textContent;
-    STATE.tags[existProp] = { urls: `${url}` };
-    console.log(STATE);
+    existTagProp = existTags[i].textContent;
+    STATE.tags[existTagProp].tiles.push(newTile);
+    STATE.tiles[newTile].tags.push(existTagProp);
   }
 }
