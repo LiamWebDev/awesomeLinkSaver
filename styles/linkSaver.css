@@ -55,6 +55,7 @@ div.hdr-btn {
   height: 27px;
   font-size: 20px;
   cursor: pointer;
+  font-family: verdana;
 }
 .tagged {
   background-color: chocolate;
@@ -214,6 +215,7 @@ div.hdr-btn {
   height: 30px;
   font-size: 24px;
   cursor: pointer;
+  font-family: verdana;
 }
 .exist-tagged {
   background-color: #811f18;
