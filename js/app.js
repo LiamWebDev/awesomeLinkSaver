@@ -135,23 +135,26 @@ function clearFields() {
   }
 }
 
-function createTile() {
-  urlValue = linkInput.value;
-  titleValue = titleInput.value;
+/**
+ * Adds a tile into the UI
+ * @param {string} title - The title of the tile
+ * @param {string} url - The URL of the tile
+ */
+function createTile(title, url) {
   tileDiv =
     '<div class="tile-container"><a href="' +
-    urlValue +
+    url +
     '" target="_blank"><div class="tile"></div></a><div class="title"><a href=" ' +
-    urlValue +
+    url +
     '" target="_blank"><p>' +
-    titleValue +
+    title +
     "</p></a></div></div>";
   document.getElementById("tiles").innerHTML += tileDiv;
 }
 
 function submit() {
   storeTags();
-  createTile();
+  createTile(titleInput.value, linkInput.value);
   clearFields();
   titleInput.value = "";
   document.getElementById("title-input").style.display = "none";
@@ -193,3 +196,15 @@ function storeTags() {
     STATE.tiles[newTile].tags.push(existTagProp);
   }
 }
+
+/**
+ * Retrieves the tiles from STATE and prints them on the UI on startup
+ */
+function printExistingTiles() {
+  // Loop over all the STATE.tiles values
+  for (const tile of Object.values(STATE.tiles)) {
+    const { title, url } = tile;
+    createTile(title, url);
+  }
+}
+printExistingTiles();
