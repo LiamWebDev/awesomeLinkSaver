@@ -176,7 +176,7 @@ div.hdr-btn {
 #title-input {
   display: none;
   justify-content: center;
-  top: 120px;
+  top: 140px;
   position: relative;
 }
 
@@ -219,4 +219,31 @@ div.hdr-btn {
 }
 .exist-tagged {
   background-color: #811f18;
+}
+
+#new-tag-input {
+  display: none;
+  justify-content: center;
+  top: 120px;
+  position: relative;
+}
+
+#new-tag-input input {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  width: 220px;
+  font-family: verdana;
+  font-size: 16px;
+  padding-left: 5px;
+}
+
+#new-tag-input label {
+  display: flex;
+  align-items: center;
+  font-size: 21px;
+  font-family: verdana;
+  font-weight: 500;
+  letter-spacing: 1px;
+  margin-right: 14px;
 }
