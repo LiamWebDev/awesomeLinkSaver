@@ -2,6 +2,8 @@ const Utils = {
   capitalizeString,
   createExistingTag,
   createNewTag,
+  toggleElementVisibility,
+  alertErrorMsg,
 };
 
 function capitalizeString(str) {
@@ -20,4 +22,13 @@ function createNewTag(newTag) {
   tagDiv = '<div class="tag" onclick="setTagged(this)">' + newTag + "</div>";
   plusses = '<div class="plus">' + "+" + "</div>";
   document.getElementById("tags").innerHTML += tagDiv;
+}
+
+function toggleElementVisibility(elemId, show, prop) {
+  document.getElementById(elemId).style.display = show ? prop : "none";
+}
+
+function alertErrorMsg(message) {
+  errorDiv.innerHTML = message;
+  toggleElementVisibility("error-msg", true, "flex");
 }
