@@ -1,3 +1,4 @@
+/* globals Utils */
 const STATE = {
   tags: {
     https: {
@@ -61,51 +62,94 @@ function join(event) {
 
 const linkInput = document.querySelector("input#link-input");
 const titleInput = document.querySelector("input#tile-title");
+const tagInput = document.querySelector("input#new-tag-name");
 const tagsParent = document.getElementById("tags");
 const existTagsParent = document.getElementById("exist-tags");
 
-linkInput.addEventListener("paste", (event) => {
-  let url = event.clipboardData.getData("text");
-  removeAllChildNodes(tagsParent);
-  titleInput.value = "";
-  createTags(url);
-  document.getElementById("submit-btn").style.display = "block";
-  document.getElementById("clear").style.display = "flex";
-  document.getElementById("title-input").style.display = "flex";
-  pathIntoTitleInput(url);
-  setFocusTitleInput();
-});
+function init() {
+  addEventListeners();
+}
+init();
 
-function createTags(paste) {
+/**************************************************
+      EVENT LISTENERS
+***************************************************/
+
+function addEventListeners() {
+  pasteEventListener();
+  tagPlussesEventListener();
+  tagInput.addEventListener("keydown", tagEnterKey);
+  linkInput.addEventListener("keydown", backspaceClear);
+}
+
+function pasteEventListener() {
+  linkInput.addEventListener("paste", (event) => {
+    let url = event.clipboardData.getData("text");
+    removeAllChildNodes(tagsParent);
+    titleInput.value = "";
+    createAllTags(url);
+    document.getElementById("submit-btn").style.display = "block";
+    document.getElementById("clear").style.display = "flex";
+    document.getElementById("title-input").style.display = "flex";
+    document.getElementById("new-tag-input").style.display = "flex";
+    pathIntoTitleInput(url);
+    setFocusTitleInput();
+  });
+}
+
+function tagPlussesEventListener() {
+  document.querySelectorAll(".plus").forEach((plusElm) => {
+    plusElm.addEventListener("click", (e) => {
+      join(e);
+    });
+  });
+}
+
+/**
+ * Creates a new user-generated tag upon enter key press
+ * @param {event} key - A keydown event
+ */
+function tagEnterKey(key) {
+  if (key.code === "Enter" || key.code === "NumpadEnter") {
+    if (tagInput.value !== "") {
+      document.getElementById("tags").innerHTML += plusses;
+      Utils.createNewTag(tagInput.value);
+      tagInput.value = "";
+      document.getElementById("undo-img").style.display = "block";
+      tagPlussesEventListener();
+    }
+  }
+}
+
+/**
+ * Clears the linkInput field upon backspace key press
+ * @param {event} key - A keydown event
+ */
+function backspaceClear(key) {
+  if (key.code === "Backspace") {
+    clearFields();
+  }
+}
+
+function createAllTags(paste) {
   let re = /\w+/g;
   regArray = paste.match(re);
   let i = 0;
   for (const tag of regArray) {
     if (STATE.tags[tag]) {
-      tagDiv =
-        '<div class="exist-tag" onclick="setExistTagged(this)">' +
-        tag +
-        "</div>";
-      document.getElementById("exist-tags").innerHTML += tagDiv;
+      Utils.createExistingTag(tag);
       regArray.splice(i, 1, "");
     } else if (STATE.exceptions.includes(tag)) {
       regArray.splice(i, 1, "");
     } else {
-      tagDiv =
-        '<div class="tag" onclick="setTagged(this)">' + regArray[i] + "</div>";
-      plusses = '<div class="plus">' + "+" + "</div>";
-      document.getElementById("tags").innerHTML += tagDiv;
+      Utils.createNewTag(tag);
       if (i !== regArray.length - 1) {
         document.getElementById("tags").innerHTML += plusses;
       }
     }
     i++;
   }
-  document.querySelectorAll(".plus").forEach((plusElm) => {
-    plusElm.addEventListener("click", (e) => {
-      join(e);
-    });
-  });
+  tagPlussesEventListener();
 }
 
 function removeAllChildNodes(parent) {
@@ -118,7 +162,7 @@ function undo() {
   removeAllChildNodes(tagsParent);
   removeAllChildNodes(existTagsParent);
   inputValue = linkInput.value;
-  createTags(inputValue);
+  createAllTags(inputValue);
   document.getElementById("undo-img").style.display = "none";
 }
 
@@ -128,8 +172,11 @@ function clearFields() {
   document.getElementById("submit-btn").style.display = "none";
   document.getElementById("clear").style.display = "none";
   linkInput.value = "";
+  titleInput.value = "";
+  tagInput.value = "";
   setFocusLinkInput();
   document.getElementById("title-input").style.display = "none";
+  document.getElementById("new-tag-input").style.display = "none";
   if ((document.getElementById("undo-img").style.display = "block")) {
     document.getElementById("undo-img").style.display = "none";
   }
@@ -156,7 +203,6 @@ function submit() {
   storeTags();
   createTile(titleInput.value, linkInput.value);
   clearFields();
-  titleInput.value = "";
   document.getElementById("title-input").style.display = "none";
   setFocusLinkInput();
 }
@@ -167,7 +213,7 @@ function pathIntoTitleInput(paste) {
   let reg2 = /\w+/g;
   titleArray = pathArr[1].match(reg2);
   for (var i = 0; i < titleArray.length; i++) {
-    titleCapitalWord = titleArray[i][0].toUpperCase() + titleArray[i].substr(1);
+    titleCapitalWord = Utils.capitalizeString(titleArray[i]);
     titleInput.value += titleCapitalWord + " ";
   }
 }
