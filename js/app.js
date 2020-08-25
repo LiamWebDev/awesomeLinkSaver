@@ -1,15 +1,15 @@
 /* globals Utils */
 const STATE = {
   domains: {
-    domain1: {
+    "www.reddit.co.uk": {
       domain: "www.reddit.co.uk",
       tiles: ["tile1"],
     },
-    domain2: {
+    "medium.com": {
       domain: "medium.com",
       tiles: ["tile2"],
     },
-    domain3: {
+    "www.youtube.com": {
       domain: "www.youtube.com",
       tiles: ["tile3"],
     },
@@ -53,6 +53,23 @@ const STATE = {
       tags: ["https", "arrays"],
     },
   },
+};
+
+/**
+ * creates or updates domain object in state
+ * @param {string} domainURL - The current URL's domain
+ * @param {string} tile - The new tile being created
+ */
+const updateDomainInState = (domainURL, tile) => {
+  const domainExists = STATE.domains[domainURL];
+  if (domainExists) {
+    STATE.domains[domainURL].tiles.push(tile);
+  } else {
+    STATE.domains[domainURL] = {
+      domain: domainURL,
+      tiles: [tile],
+    };
+  }
 };
 
 function setFocusLinkInput() {
@@ -109,18 +126,17 @@ function pasteEventListener() {
   linkInput.addEventListener("paste", (event) => {
     let urlFull = event.clipboardData.getData("text");
     removeAllChildNodes(tagsParent);
+    Utils.toggleElementVisibility("clear", true);
     if (checkURL(urlFull)) {
       Utils.alertErrorMsg("Duplicate URL Detected!");
-      Utils.toggleElementVisibility("clear", true, "flex");
     } else {
       titleInput.value = "";
       const urlDomain = new URL(urlFull).hostname;
       const urlPath = new URL(urlFull).pathname;
       createAllTags(urlDomain, urlPath);
       Utils.toggleElementVisibility("submit-btn", true, "block");
-      Utils.toggleElementVisibility("clear", true, "flex");
-      Utils.toggleElementVisibility("title-input", true, "flex");
-      Utils.toggleElementVisibility("new-tag-input", true, "flex");
+      Utils.toggleElementVisibility("title-input", true);
+      Utils.toggleElementVisibility("new-tag-input", true);
       pathIntoTitleInput(urlPath);
       setFocusTitleInput();
     }
@@ -161,11 +177,16 @@ function backspaceClear(key) {
   }
 }
 
+/**
+ * Creates the tags in the UI
+ * @param {string} domain - The domain of the pasted URL
+ * @param {string} path - The path of the pasted URL
+ */
 function createAllTags(domain, path) {
   domainTagDiv.innerHTML = domain;
-  Utils.toggleElementVisibility("domain-tag", true, "flex");
+  Utils.toggleElementVisibility("domain-tag", true);
   let re = /\w+/g;
-  tagArray = path.match(re);
+  let tagArray = path.match(re);
   let i = 0;
   for (const tag of tagArray) {
     if (STATE.tags[tag]) {
@@ -184,6 +205,10 @@ function createAllTags(domain, path) {
   tagPlussesEventListener();
 }
 
+/**
+ * Creates the tags in the UI
+ * @param {object} parent - The DOM element for removing children
+ */
 function removeAllChildNodes(parent) {
   while (parent.firstChild) {
     parent.removeChild(parent.firstChild);
@@ -263,8 +288,6 @@ function storeTags() {
   let existTags = document.getElementsByClassName("exist-tagged");
   let tileNo = Object.keys(STATE.tiles).length + 1;
   let newTile = "tile" + tileNo;
-  let domainNo = Object.keys(STATE.domains).length + 1;
-  let newDomain = "domain" + domainNo;
 
   // new tile object
   STATE.tiles[newTile] = {
@@ -292,31 +315,8 @@ function storeTags() {
     STATE.tiles[newTile].tags.push(existTagProp);
   }
 
-  domainArray = [];
-  /**
-   * Loops through domain objects
-   * If not the same as URL domain, then puts it into an array
-   * If it is, then it pushes the tile reference to the existing domain object
-   * Also puts it into the array so that new domain object constructor only occurs when it's a new domain URL
-   */
-  for (const existDomain of Object.keys(STATE.domains)) {
-    if (STATE.domains[existDomain].domain != currentDomain) {
-      domainArray.push(STATE.domains[existDomain].domain);
-    } else if (STATE.domains[existDomain].domain === currentDomain) {
-      STATE.domains[existDomain].tiles.push(newTile);
-      domainArray.push(currentDomain);
-    }
-  }
-
-  // constructor for new domain object
-  function domainObject(domainURL, tileNumber) {
-    return { domain: domainURL, tiles: [tileNumber] };
-  }
-
-  // if the domain of the URL is new, then it creates a new domain object
-  if (!domainArray.includes(currentDomain)) {
-    STATE.domains[newDomain] = new domainObject(currentDomain, newTile);
-  }
+  // creates or updates domain object in state
+  updateDomainInState(currentDomain, newTile);
 }
 
 /**
@@ -331,10 +331,14 @@ function printExistingTiles() {
 }
 printExistingTiles();
 
+/**
+ * Checks whether the pasted URL already exists in the tiles object
+ */
 function checkURL(link) {
   for (const existLink of Object.values(STATE.tiles)) {
     if (existLink.url === link) {
       return true;
     }
   }
+  return false;
 }
