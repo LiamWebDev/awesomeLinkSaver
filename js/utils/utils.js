@@ -24,7 +24,7 @@ function createNewTag(newTag) {
   document.getElementById("tags").innerHTML += tagDiv;
 }
 
-function toggleElementVisibility(elemId, show, prop) {
+function toggleElementVisibility(elemId, show, prop = "flex") {
   document.getElementById(elemId).style.display = show ? prop : "none";
 }
 
