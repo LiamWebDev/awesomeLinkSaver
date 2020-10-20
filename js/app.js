@@ -31,14 +31,14 @@ const STATE = {
   exceptions: ["to", "the", "best"],
   tiles: {
     tile1: {
-      id: 1,
+      id: "tile1",
       domain: "www.reddit.co.uk",
       url: "https://www.reddit.co.uk/example",
       title: "Reddit Article",
       tags: ["https"],
     },
     tile2: {
-      id: 2,
+      id: "tile2",
       domain: "medium.com",
       url:
         "https://medium.com/@js_tut/the-complete-guide-to-loops-cfa6522157e9",
@@ -46,7 +46,7 @@ const STATE = {
       tags: ["loops", "guide", "javascript"],
     },
     tile3: {
-      id: 3,
+      id: "tile3",
       domain: "www.youtube.com",
       url: "https://www.youtube.com/video-example",
       title: "YouTube Video Article",
@@ -116,15 +116,15 @@ init();
 ***************************************************/
 
 function addEventListeners() {
-  pasteEventListener();
   tagPlussesEventListener();
   tagInput.addEventListener("keydown", tagEnterKey);
   linkInput.addEventListener("keydown", backspaceClear);
+  pasteEventListener();
 }
 
 function pasteEventListener() {
   linkInput.addEventListener("paste", (event) => {
-    let urlFull = event.clipboardData.getData("text");
+    const urlFull = event.clipboardData.getData("text");
     removeAllChildNodes(tagsParent);
     Utils.toggleElementVisibility("clear", true);
     if (checkURL(urlFull)) {
@@ -267,6 +267,7 @@ function submit() {
   clearFields();
   Utils.toggleElementVisibility("title-input", false);
   setFocusLinkInput();
+  console.log(STATE.tiles);
 }
 
 function pathIntoTitleInput(paste) {
@@ -291,7 +292,7 @@ function storeTags() {
 
   // new tile object
   STATE.tiles[newTile] = {
-    id: tileNo,
+    id: newTile,
     domain: currentDomain,
     url: url,
     title: title,
