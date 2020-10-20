@@ -116,10 +116,10 @@ init();
 ***************************************************/
 
 function addEventListeners() {
+  pasteEventListener();
   tagPlussesEventListener();
   tagInput.addEventListener("keydown", tagEnterKey);
   linkInput.addEventListener("keydown", backspaceClear);
-  pasteEventListener();
 }
 
 function pasteEventListener() {
@@ -267,7 +267,6 @@ function submit() {
   clearFields();
   Utils.toggleElementVisibility("title-input", false);
   setFocusLinkInput();
-  console.log(STATE.tiles);
 }
 
 function pathIntoTitleInput(paste) {
