@@ -1,5 +1,19 @@
 /* globals Utils */
 const STATE = {
+  domains: {
+    "www.reddit.co.uk": {
+      domain: "www.reddit.co.uk",
+      tiles: ["tile1"],
+    },
+    "medium.com": {
+      domain: "medium.com",
+      tiles: ["tile2"],
+    },
+    "www.youtube.com": {
+      domain: "www.youtube.com",
+      tiles: ["tile3"],
+    },
+  },
   tags: {
     https: {
       tiles: ["tile1", "tile3"],
@@ -8,30 +22,54 @@ const STATE = {
       tiles: ["tile2"],
     },
     arrays: {
-      tiles: ["tile2", "tile3"],
+      tiles: ["tile3"],
+    },
+    javascript: {
+      tiles: ["tile2"],
     },
   },
   exceptions: ["to", "the", "best"],
   tiles: {
     tile1: {
-      id: 1,
-      url: "www.reddit.co.uk/example",
+      id: "tile1",
+      domain: "www.reddit.co.uk",
+      url: "https://www.reddit.co.uk/example",
       title: "Reddit Article",
       tags: ["https"],
     },
     tile2: {
-      id: 2,
-      url: "www.medium.com/example",
-      title: "Medium Article",
-      tags: ["loops", "arrays"],
+      id: "tile2",
+      domain: "medium.com",
+      url:
+        "https://medium.com/@js_tut/the-complete-guide-to-loops-cfa6522157e9",
+      title: "The Complete Guide To Loops",
+      tags: ["loops", "guide", "javascript"],
     },
     tile3: {
-      id: 3,
-      url: "www.youtube.com/video-example",
+      id: "tile3",
+      domain: "www.youtube.com",
+      url: "https://www.youtube.com/video-example",
       title: "YouTube Video Article",
       tags: ["https", "arrays"],
     },
   },
+};
+
+/**
+ * creates or updates domain object in state
+ * @param {string} domainURL - The current URL's domain
+ * @param {string} tile - The new tile being created
+ */
+const updateDomainInState = (domainURL, tile) => {
+  const domainExists = STATE.domains[domainURL];
+  if (domainExists) {
+    STATE.domains[domainURL].tiles.push(tile);
+  } else {
+    STATE.domains[domainURL] = {
+      domain: domainURL,
+      tiles: [tile],
+    };
+  }
 };
 
 function setFocusLinkInput() {
@@ -57,7 +95,7 @@ function join(event) {
   previousTag.innerHTML += " " + nextTagText;
   nextTag.parentNode.removeChild(nextTag);
   event.target.parentNode.removeChild(event.target);
-  document.getElementById("undo-img").style.display = "block";
+  Utils.toggleElementVisibility("undo-img", true, "block");
 }
 
 const linkInput = document.querySelector("input#link-input");
@@ -65,6 +103,8 @@ const titleInput = document.querySelector("input#tile-title");
 const tagInput = document.querySelector("input#new-tag-name");
 const tagsParent = document.getElementById("tags");
 const existTagsParent = document.getElementById("exist-tags");
+const errorDiv = document.querySelector("div#error-msg");
+const domainTagDiv = document.querySelector("div#domain-tag");
 
 function init() {
   addEventListeners();
@@ -84,16 +124,22 @@ function addEventListeners() {
 
 function pasteEventListener() {
   linkInput.addEventListener("paste", (event) => {
-    let url = event.clipboardData.getData("text");
+    const urlFull = event.clipboardData.getData("text");
     removeAllChildNodes(tagsParent);
-    titleInput.value = "";
-    createAllTags(url);
-    document.getElementById("submit-btn").style.display = "block";
-    document.getElementById("clear").style.display = "flex";
-    document.getElementById("title-input").style.display = "flex";
-    document.getElementById("new-tag-input").style.display = "flex";
-    pathIntoTitleInput(url);
-    setFocusTitleInput();
+    Utils.toggleElementVisibility("clear", true);
+    if (checkURL(urlFull)) {
+      Utils.alertErrorMsg("Duplicate URL Detected!");
+    } else {
+      titleInput.value = "";
+      const urlDomain = new URL(urlFull).hostname;
+      const urlPath = new URL(urlFull).pathname;
+      createAllTags(urlDomain, urlPath);
+      Utils.toggleElementVisibility("submit-btn", true, "block");
+      Utils.toggleElementVisibility("title-input", true);
+      Utils.toggleElementVisibility("new-tag-input", true);
+      pathIntoTitleInput(urlPath);
+      setFocusTitleInput();
+    }
   });
 }
 
@@ -115,7 +161,7 @@ function tagEnterKey(key) {
       document.getElementById("tags").innerHTML += plusses;
       Utils.createNewTag(tagInput.value);
       tagInput.value = "";
-      document.getElementById("undo-img").style.display = "block";
+      Utils.toggleElementVisibility("undo-img", true, "block");
       tagPlussesEventListener();
     }
   }
@@ -131,19 +177,26 @@ function backspaceClear(key) {
   }
 }
 
-function createAllTags(paste) {
+/**
+ * Creates the tags in the UI
+ * @param {string} domain - The domain of the pasted URL
+ * @param {string} path - The path of the pasted URL
+ */
+function createAllTags(domain, path) {
+  domainTagDiv.innerHTML = domain;
+  Utils.toggleElementVisibility("domain-tag", true);
   let re = /\w+/g;
-  regArray = paste.match(re);
+  let tagArray = path.match(re);
   let i = 0;
-  for (const tag of regArray) {
+  for (const tag of tagArray) {
     if (STATE.tags[tag]) {
       Utils.createExistingTag(tag);
-      regArray.splice(i, 1, "");
+      tagArray.splice(i, 1, "");
     } else if (STATE.exceptions.includes(tag)) {
-      regArray.splice(i, 1, "");
+      tagArray.splice(i, 1, "");
     } else {
       Utils.createNewTag(tag);
-      if (i !== regArray.length - 1) {
+      if (i !== tagArray.length - 1) {
         document.getElementById("tags").innerHTML += plusses;
       }
     }
@@ -152,6 +205,10 @@ function createAllTags(paste) {
   tagPlussesEventListener();
 }
 
+/**
+ * Creates the tags in the UI
+ * @param {object} parent - The DOM element for removing children
+ */
 function removeAllChildNodes(parent) {
   while (parent.firstChild) {
     parent.removeChild(parent.firstChild);
@@ -162,23 +219,28 @@ function undo() {
   removeAllChildNodes(tagsParent);
   removeAllChildNodes(existTagsParent);
   inputValue = linkInput.value;
-  createAllTags(inputValue);
-  document.getElementById("undo-img").style.display = "none";
+  const urlDomain = new URL(inputValue).hostname;
+  const urlPath = new URL(inputValue).pathname;
+  createAllTags(urlDomain, urlPath);
+  Utils.toggleElementVisibility("undo-img", false);
 }
 
 function clearFields() {
   removeAllChildNodes(tagsParent);
   removeAllChildNodes(existTagsParent);
-  document.getElementById("submit-btn").style.display = "none";
-  document.getElementById("clear").style.display = "none";
+  removeAllChildNodes(domainTagDiv);
+  Utils.toggleElementVisibility("submit-btn", false);
+  Utils.toggleElementVisibility("clear", false);
+  Utils.toggleElementVisibility("error-msg", false);
+  Utils.toggleElementVisibility("domain-tag", false);
   linkInput.value = "";
   titleInput.value = "";
   tagInput.value = "";
   setFocusLinkInput();
-  document.getElementById("title-input").style.display = "none";
-  document.getElementById("new-tag-input").style.display = "none";
+  Utils.toggleElementVisibility("title-input", false);
+  Utils.toggleElementVisibility("new-tag-input", false);
   if ((document.getElementById("undo-img").style.display = "block")) {
-    document.getElementById("undo-img").style.display = "none";
+    Utils.toggleElementVisibility("undo-img", false);
   }
 }
 
@@ -203,7 +265,7 @@ function submit() {
   storeTags();
   createTile(titleInput.value, linkInput.value);
   clearFields();
-  document.getElementById("title-input").style.display = "none";
+  Utils.toggleElementVisibility("title-input", false);
   setFocusLinkInput();
 }
 
@@ -219,16 +281,25 @@ function pathIntoTitleInput(paste) {
 }
 
 function storeTags() {
+  const currentDomain = document.getElementById("domain-tag").innerHTML;
   const url = linkInput.value;
   const title = titleInput.value;
   let newTags = document.getElementsByClassName("tagged");
   let existTags = document.getElementsByClassName("exist-tagged");
-  //let largerArray = Math.max(newTags.length, existTags.length);
   let tileNo = Object.keys(STATE.tiles).length + 1;
   let newTile = "tile" + tileNo;
 
-  STATE.tiles[newTile] = { id: tileNo, url: url, title: title, tags: [] };
+  // new tile object
+  STATE.tiles[newTile] = {
+    id: newTile,
+    domain: currentDomain,
+    url: url,
+    title: title,
+    tags: [],
+  };
 
+  // adds new tags to tags object
+  // and adds new tags to new tile object
   for (var i = 0; i < newTags.length; i++) {
     newTagProp = newTags[i].textContent;
     STATE.tags[newTagProp] = { tiles: [] };
@@ -236,11 +307,16 @@ function storeTags() {
     STATE.tiles[newTile].tags.push(newTagProp);
   }
 
+  // adds new tile to existing tag object
+  // and adds tag to new tile object
   for (var i = 0; i < existTags.length; i++) {
     existTagProp = existTags[i].textContent;
     STATE.tags[existTagProp].tiles.push(newTile);
     STATE.tiles[newTile].tags.push(existTagProp);
   }
+
+  // creates or updates domain object in state
+  updateDomainInState(currentDomain, newTile);
 }
 
 /**
@@ -254,3 +330,15 @@ function printExistingTiles() {
   }
 }
 printExistingTiles();
+
+/**
+ * Checks whether the pasted URL already exists in the tiles object
+ */
+function checkURL(link) {
+  for (const existLink of Object.values(STATE.tiles)) {
+    if (existLink.url === link) {
+      return true;
+    }
+  }
+  return false;
+}
