@@ -30,5 +30,5 @@ function toggleElementVisibility(elemId, show, prop = "flex") {
 
 function alertErrorMsg(message) {
   errorDiv.innerHTML = message;
-  toggleElementVisibility("error-msg", true, "flex");
+  toggleElementVisibility("error-msg", true);
 }
