@@ -36,6 +36,8 @@ const STATE = {
       url: "https://www.reddit.co.uk/example",
       title: "Reddit Article",
       tags: ["https"],
+      timestamp: "1603235293104",
+      favourite: false,
     },
     tile2: {
       id: "tile2",
@@ -44,6 +46,8 @@ const STATE = {
         "https://medium.com/@js_tut/the-complete-guide-to-loops-cfa6522157e9",
       title: "The Complete Guide To Loops",
       tags: ["loops", "guide", "javascript"],
+      timestamp: "1603235376921",
+      favourite: true,
     },
     tile3: {
       id: "tile3",
@@ -51,6 +55,8 @@ const STATE = {
       url: "https://www.youtube.com/video-example",
       title: "YouTube Video Article",
       tags: ["https", "arrays"],
+      timestamp: "1603235456821",
+      favourite: false,
     },
   },
 };
@@ -105,6 +111,8 @@ const tagsParent = document.getElementById("tags");
 const existTagsParent = document.getElementById("exist-tags");
 const errorDiv = document.querySelector("div#error-msg");
 const domainTagDiv = document.querySelector("div#domain-tag");
+const favIcon = document.getElementById("fav-img");
+var favouriteValue = false;
 
 function init() {
   addEventListeners();
@@ -130,6 +138,7 @@ function pasteEventListener() {
     if (checkURL(urlFull)) {
       Utils.alertErrorMsg("Duplicate URL Detected!");
     } else {
+      Utils.toggleElementVisibility("error-msg", false);
       titleInput.value = "";
       const urlDomain = new URL(urlFull).hostname;
       const urlPath = new URL(urlFull).pathname;
@@ -137,8 +146,9 @@ function pasteEventListener() {
       Utils.toggleElementVisibility("submit-btn", true, "block");
       Utils.toggleElementVisibility("title-input", true);
       Utils.toggleElementVisibility("new-tag-input", true);
+      Utils.toggleElementVisibility("fav-img", true);
       pathIntoTitleInput(urlPath);
-      setFocusTitleInput();
+      setFocusLinkInput();
     }
   });
 }
@@ -225,6 +235,18 @@ function undo() {
   Utils.toggleElementVisibility("undo-img", false);
 }
 
+function addFav() {
+  if (!favouriteValue) {
+    const icon = document.getElementById("fav-img");
+    icon.src = "./assets/img/star-filled-icon.png";
+    favouriteValue = true;
+  } else {
+    const icon = document.getElementById("fav-img");
+    icon.src = "./assets/img/star-empty-icon.png";
+    favouriteValue = false;
+  }
+}
+
 function clearFields() {
   removeAllChildNodes(tagsParent);
   removeAllChildNodes(existTagsParent);
@@ -233,6 +255,9 @@ function clearFields() {
   Utils.toggleElementVisibility("clear", false);
   Utils.toggleElementVisibility("error-msg", false);
   Utils.toggleElementVisibility("domain-tag", false);
+  Utils.toggleElementVisibility("fav-img", false);
+  favouriteValue = false;
+  favIcon.src = "./assets/img/star-empty-icon.png";
   linkInput.value = "";
   titleInput.value = "";
   tagInput.value = "";
@@ -249,11 +274,21 @@ function clearFields() {
  * @param {string} title - The title of the tile
  * @param {string} url - The URL of the tile
  */
-function createTile(title, url) {
+function createTile(title, url, favourite) {
+  if (favourite) {
+    favImg =
+      '<img class="favs-icon" src="file:///c:/Users/Liam/Desktop/LinkSaver/assets/img/star-filled-icon.png">';
+  } else {
+    favImg =
+      '<img class="favs-icon" src="file:///c:/Users/Liam/Desktop/LinkSaver/assets/img/star-empty-icon.png">';
+  }
+
   tileDiv =
     '<div class="tile-container"><a href="' +
     url +
-    '" target="_blank"><div class="tile"></div></a><div class="title"><a href=" ' +
+    '" target="_blank"><div class="tile">' +
+    favImg +
+    '</div></a><div class="title"><a href=" ' +
     url +
     '" target="_blank"><p>' +
     title +
@@ -263,7 +298,7 @@ function createTile(title, url) {
 
 function submit() {
   storeTags();
-  createTile(titleInput.value, linkInput.value);
+  createTile(titleInput.value, linkInput.value, favouriteValue);
   clearFields();
   Utils.toggleElementVisibility("title-input", false);
   setFocusLinkInput();
@@ -288,6 +323,8 @@ function storeTags() {
   let existTags = document.getElementsByClassName("exist-tagged");
   let tileNo = Object.keys(STATE.tiles).length + 1;
   let newTile = "tile" + tileNo;
+  const date = new Date();
+  const timestamp = date.getTime();
 
   // new tile object
   STATE.tiles[newTile] = {
@@ -296,6 +333,8 @@ function storeTags() {
     url: url,
     title: title,
     tags: [],
+    timestamp: timestamp,
+    favourite: favouriteValue,
   };
 
   // adds new tags to tags object
@@ -325,8 +364,8 @@ function storeTags() {
 function printExistingTiles() {
   // Loop over all the STATE.tiles values
   for (const tile of Object.values(STATE.tiles)) {
-    const { title, url } = tile;
-    createTile(title, url);
+    const { title, url, favourite } = tile;
+    createTile(title, url, favourite);
   }
 }
 printExistingTiles();
