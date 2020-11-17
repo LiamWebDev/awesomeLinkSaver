@@ -16,10 +16,10 @@ const STATE = {
   },
   tags: {
     https: {
-      tiles: ["tile1", "tile3"],
+      tiles: ["tile1"],
     },
     loops: {
-      tiles: ["tile2"],
+      tiles: ["tile2", "tile3"],
     },
     arrays: {
       tiles: ["tile3"],
@@ -36,7 +36,7 @@ const STATE = {
       url: "https://www.reddit.co.uk/example",
       title: "Reddit Article",
       tags: ["https"],
-      timestamp: "1603235293104",
+      timestamp: 1603235293104,
       favourite: false,
     },
     tile2: {
@@ -46,7 +46,7 @@ const STATE = {
         "https://medium.com/@js_tut/the-complete-guide-to-loops-cfa6522157e9",
       title: "The Complete Guide To Loops",
       tags: ["loops", "guide", "javascript"],
-      timestamp: "1603235376921",
+      timestamp: 1603235376921,
       favourite: true,
     },
     tile3: {
@@ -55,7 +55,7 @@ const STATE = {
       url: "https://www.youtube.com/video-example",
       title: "YouTube Video Article",
       tags: ["https", "arrays"],
-      timestamp: "1603235456821",
+      timestamp: 1603235456821,
       favourite: false,
     },
   },
@@ -112,7 +112,7 @@ const existTagsParent = document.getElementById("exist-tags");
 const errorDiv = document.querySelector("div#error-msg");
 const domainTagDiv = document.querySelector("div#domain-tag");
 const favIcon = document.getElementById("fav-img");
-var favouriteValue = false;
+let favouriteValue = false;
 
 function init() {
   addEventListeners();
@@ -276,11 +276,9 @@ function clearFields() {
  */
 function createTile(title, url, favourite) {
   if (favourite) {
-    favImg =
-      '<img class="favs-icon" src="file:///c:/Users/Liam/Desktop/LinkSaver/assets/img/star-filled-icon.png">';
+    favImg = '<img class="favs-icon" src="./assets/img/star-filled-icon.png">';
   } else {
-    favImg =
-      '<img class="favs-icon" src="file:///c:/Users/Liam/Desktop/LinkSaver/assets/img/star-empty-icon.png">';
+    favImg = '<img class="favs-icon" src="./assets/img/star-empty-icon.png">';
   }
 
   tileDiv =
@@ -381,3 +379,17 @@ function checkURL(link) {
   }
   return false;
 }
+
+const showLatestTags = () => {
+  Object.entries(STATE.tags).map(([tag, value]) => {
+    const tagEntry =
+      '<div class="tile-container"><div class="tile"><div class="tag-qty">' +
+      value.tiles.length +
+      '</div></div><div class="title"><p>' +
+      tag +
+      "</p></div></div>";
+    const tagContainer = document.getElementById("tag-totals");
+    tagContainer.insertAdjacentHTML("beforeend", tagEntry);
+  });
+};
+showLatestTags();
