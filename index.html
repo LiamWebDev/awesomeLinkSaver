@@ -21,7 +21,12 @@
 
     <div id="input-line">
       <div id="input">
-        <input id="link-input" name="link-input" autofocus />
+        <input
+          id="link-input"
+          name="link-input"
+          autofocus
+          placeholder="Paste URL here..."
+        />
       </div>
       <div id="undo" onclick="undo()">
         <img id="undo-img" src="./assets/img/undo-icon.png" />
@@ -45,7 +50,13 @@
       <button id="submit-btn" onclick="submit()">Submit</button>
     </div>
     <div id="clear" onclick="clearFields()">Clear Input</div>
-    <div id="tiles"></div>
+    <div id="tiles">
+      <h2>Latest Tags</h2>
+    </div>
+
+    <div id="tag-totals">
+      <h2>Tags By Total</h2>
+    </div>
 
     <script src="./js/app.js"></script>
     <script src="./js/utils/utils.js"></script>
