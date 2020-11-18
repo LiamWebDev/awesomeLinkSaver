@@ -36,7 +36,7 @@ const STATE = {
       url: "https://www.reddit.co.uk/example",
       title: "Reddit Article",
       tags: ["https"],
-      timestamp: "1603235293104",
+      timestamp: 1603235293104,
       favourite: false,
     },
     tile2: {
@@ -46,7 +46,7 @@ const STATE = {
         "https://medium.com/@js_tut/the-complete-guide-to-loops-cfa6522157e9",
       title: "The Complete Guide To Loops",
       tags: ["loops", "guide", "javascript"],
-      timestamp: "1603235376921",
+      timestamp: 1603235376921,
       favourite: true,
     },
     tile3: {
@@ -55,7 +55,7 @@ const STATE = {
       url: "https://www.youtube.com/video-example",
       title: "YouTube Video Article",
       tags: ["https", "arrays"],
-      timestamp: "1603235456821",
+      timestamp: 1603235456821,
       favourite: false,
     },
   },
@@ -112,7 +112,7 @@ const existTagsParent = document.getElementById("exist-tags");
 const errorDiv = document.querySelector("div#error-msg");
 const domainTagDiv = document.querySelector("div#domain-tag");
 const favIcon = document.getElementById("fav-img");
-var favouriteValue = false;
+let favouriteValue = false;
 
 function init() {
   addEventListeners();
@@ -126,6 +126,8 @@ init();
 function addEventListeners() {
   pasteEventListener();
   tagPlussesEventListener();
+  tileDatasetEventListerner();
+  favIconEventListener();
   tagInput.addEventListener("keydown", tagEnterKey);
   linkInput.addEventListener("keydown", backspaceClear);
 }
@@ -139,6 +141,7 @@ function pasteEventListener() {
       Utils.alertErrorMsg("Duplicate URL Detected!");
     } else {
       Utils.toggleElementVisibility("error-msg", false);
+      Utils.toggleFavouriteStatus(true, favIcon);
       titleInput.value = "";
       const urlDomain = new URL(urlFull).hostname;
       const urlPath = new URL(urlFull).pathname;
@@ -185,6 +188,26 @@ function backspaceClear(key) {
   if (key.code === "Backspace") {
     clearFields();
   }
+}
+
+function tileDatasetEventListerner() {
+  document.querySelectorAll(".tile-container").forEach((tile) => {
+    tile.addEventListener("click", (e) => {
+      e.preventDefault();
+      const { url } = e.currentTarget.dataset;
+      window.open(url, "_blank");
+    });
+  });
+}
+
+function favIconEventListener() {
+  document.querySelectorAll(".favs-icon").forEach((star) => {
+    star.addEventListener("click", (e) => {
+      e.stopImmediatePropagation();
+      const { icon } = star.dataset;
+      Utils.toggleFavouriteStatus(icon, star);
+    });
+  });
 }
 
 /**
@@ -236,15 +259,11 @@ function undo() {
 }
 
 function addFav() {
-  if (!favouriteValue) {
-    const icon = document.getElementById("fav-img");
-    icon.src = "./assets/img/star-filled-icon.png";
-    favouriteValue = true;
-  } else {
-    const icon = document.getElementById("fav-img");
-    icon.src = "./assets/img/star-empty-icon.png";
-    favouriteValue = false;
-  }
+  const icon = document.getElementById("fav-img");
+  favouriteValue = !favouriteValue;
+  icon.src = favouriteValue
+    ? "./assets/img/star-filled-icon.png"
+    : "./assets/img/star-empty-icon.png";
 }
 
 function clearFields() {
@@ -256,8 +275,7 @@ function clearFields() {
   Utils.toggleElementVisibility("error-msg", false);
   Utils.toggleElementVisibility("domain-tag", false);
   Utils.toggleElementVisibility("fav-img", false);
-  favouriteValue = false;
-  favIcon.src = "./assets/img/star-empty-icon.png";
+  Utils.toggleFavouriteStatus(false, favIcon);
   linkInput.value = "";
   titleInput.value = "";
   tagInput.value = "";
@@ -277,18 +295,18 @@ function clearFields() {
 function createTile(title, url, favourite) {
   if (favourite) {
     favImg =
-      '<img class="favs-icon" src="file:///c:/Users/Liam/Desktop/LinkSaver/assets/img/star-filled-icon.png">';
+      '<img class="favs-icon" src="file:///c:/Users/Liam/Desktop/LinkSaver/assets/img/star-filled-icon.png" data-icon="true">';
   } else {
     favImg =
-      '<img class="favs-icon" src="file:///c:/Users/Liam/Desktop/LinkSaver/assets/img/star-empty-icon.png">';
+      '<img class="favs-icon" src="file:///c:/Users/Liam/Desktop/LinkSaver/assets/img/star-empty-icon.png" data-icon="false">';
   }
 
   tileDiv =
-    '<div class="tile-container"><a href="' +
+    '<div class="tile-container" data-url="' +
     url +
-    '" target="_blank"><div class="tile">' +
+    '"><div class="tile">' +
     favImg +
-    '</div></a><div class="title"><a href=" ' +
+    '</div><div class="title"><a href=" ' +
     url +
     '" target="_blank"><p>' +
     title +
@@ -302,6 +320,8 @@ function submit() {
   clearFields();
   Utils.toggleElementVisibility("title-input", false);
   setFocusLinkInput();
+  tileDatasetEventListerner();
+  favIconEventListener();
 }
 
 function pathIntoTitleInput(paste) {
@@ -323,8 +343,7 @@ function storeTags() {
   let existTags = document.getElementsByClassName("exist-tagged");
   let tileNo = Object.keys(STATE.tiles).length + 1;
   let newTile = "tile" + tileNo;
-  const date = new Date();
-  const timestamp = date.getTime();
+  const now = new Date().getTime();
 
   // new tile object
   STATE.tiles[newTile] = {
@@ -333,7 +352,7 @@ function storeTags() {
     url: url,
     title: title,
     tags: [],
-    timestamp: timestamp,
+    timestamp: now,
     favourite: favouriteValue,
   };
 
@@ -367,6 +386,8 @@ function printExistingTiles() {
     const { title, url, favourite } = tile;
     createTile(title, url, favourite);
   }
+  tileDatasetEventListerner();
+  favIconEventListener();
 }
 printExistingTiles();
 
