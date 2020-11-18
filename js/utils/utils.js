@@ -4,6 +4,7 @@ const Utils = {
   createNewTag,
   toggleElementVisibility,
   alertErrorMsg,
+  toggleFavouriteStatus,
 };
 
 function capitalizeString(str) {
@@ -31,4 +32,12 @@ function toggleElementVisibility(elemId, show, prop = "flex") {
 function alertErrorMsg(message) {
   errorDiv.innerHTML = message;
   toggleElementVisibility("error-msg", true);
+}
+
+function toggleFavouriteStatus(status, element) {
+  status
+    ? (element.src = "./assets/img/star-empty-icon.png")
+    : (element.src = "./assets/img/star-filled-icon.png");
+
+  element.dataset.icon = !status;
 }
