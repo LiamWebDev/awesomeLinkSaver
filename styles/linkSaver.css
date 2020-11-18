@@ -302,3 +302,7 @@ h2 {
   height: 50px;
   display: none;
 }
+
+.tile-container {
+  cursor: pointer;
+}
