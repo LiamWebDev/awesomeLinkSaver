@@ -141,7 +141,7 @@ function pasteEventListener() {
       Utils.alertErrorMsg("Duplicate URL Detected!");
     } else {
       Utils.toggleElementVisibility("error-msg", false);
-      Utils.toggleFavouriteStatus(true, favIcon);
+      Utils.toggleFavouriteStatus("true", favIcon);
       titleInput.value = "";
       const urlDomain = new URL(urlFull).hostname;
       const urlPath = new URL(urlFull).pathname;
@@ -190,6 +190,9 @@ function backspaceClear(key) {
   }
 }
 
+/**
+ * Event listener for tile elements that reads dataset containing URL and opens it in a new window when clicked
+ */
 function tileDatasetEventListerner() {
   document.querySelectorAll(".tile-container").forEach((tile) => {
     tile.addEventListener("click", (e) => {
@@ -200,12 +203,17 @@ function tileDatasetEventListerner() {
   });
 }
 
+/**
+ * Event listerner for star image elements for updating the image and tile object when clicked
+ */
 function favIconEventListener() {
   document.querySelectorAll(".favs-icon").forEach((star) => {
     star.addEventListener("click", (e) => {
       e.stopImmediatePropagation();
-      const { icon } = star.dataset;
-      Utils.toggleFavouriteStatus(icon, star);
+      const { favourite } = star.dataset;
+      const { id } = star.dataset;
+      Utils.toggleFavouriteStatus(favourite, star);
+      favStatusUpdate(id, favourite);
     });
   });
 }
@@ -292,13 +300,17 @@ function clearFields() {
  * @param {string} title - The title of the tile
  * @param {string} url - The URL of the tile
  */
-function createTile(title, url, favourite) {
+function createTile(title, url, favourite, id) {
   if (favourite) {
     favImg =
-      '<img class="favs-icon" src="file:///c:/Users/Liam/Desktop/LinkSaver/assets/img/star-filled-icon.png" data-icon="true">';
+      '<img class="favs-icon" src="file:///c:/Users/Liam/Desktop/LinkSaver/assets/img/star-filled-icon.png" data-favourite="true" data-id="' +
+      id +
+      '">';
   } else {
     favImg =
-      '<img class="favs-icon" src="file:///c:/Users/Liam/Desktop/LinkSaver/assets/img/star-empty-icon.png" data-icon="false">';
+      '<img class="favs-icon" src="file:///c:/Users/Liam/Desktop/LinkSaver/assets/img/star-empty-icon.png" data-favourite="false" data-id="' +
+      id +
+      '">';
   }
 
   tileDiv =
@@ -383,8 +395,8 @@ function storeTags() {
 function printExistingTiles() {
   // Loop over all the STATE.tiles values
   for (const tile of Object.values(STATE.tiles)) {
-    const { title, url, favourite } = tile;
-    createTile(title, url, favourite);
+    const { title, url, favourite, id } = tile;
+    createTile(title, url, favourite, id);
   }
   tileDatasetEventListerner();
   favIconEventListener();
@@ -401,4 +413,15 @@ function checkURL(link) {
     }
   }
   return false;
+}
+
+/**
+ * Updates the favourite property in tile objects
+ * @param {string} id - The data-id value refering to the tile object key, against a star icon
+ * @param {string} icon - The data-icon value refering to favourite status, against a star icon
+ */
+function favStatusUpdate(id, icon) {
+  let bool = icon === "true" ? false : true;
+  STATE.tiles[id].favourite = bool;
+  console.log(STATE.tiles[id]);
 }
