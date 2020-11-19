@@ -34,10 +34,16 @@ function alertErrorMsg(message) {
   toggleElementVisibility("error-msg", true);
 }
 
+/**
+ * Updates the image source and dataset properties for the favourite star image
+ * @param {string} status - The data-icon value refering to favourite status, against a star icon
+ * @param {element} element - The star icon image element
+ */
 function toggleFavouriteStatus(status, element) {
-  status
-    ? (element.src = "./assets/img/star-empty-icon.png")
-    : (element.src = "./assets/img/star-filled-icon.png");
+  element.src =
+    status === "false"
+      ? "./assets/img/star-filled-icon.png"
+      : "./assets/img/star-empty-icon.png";
 
-  element.dataset.icon = !status;
+  element.dataset.favourite = status === "false" ? "true" : "false";
 }
