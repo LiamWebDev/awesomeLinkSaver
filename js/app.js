@@ -36,6 +36,8 @@ const STATE = {
       url: "https://www.reddit.co.uk/example",
       title: "Reddit Article",
       tags: ["https"],
+      timestamp: 1603235293104,
+      favourite: false,
     },
     tile2: {
       id: "tile2",
@@ -44,6 +46,8 @@ const STATE = {
         "https://medium.com/@js_tut/the-complete-guide-to-loops-cfa6522157e9",
       title: "The Complete Guide To Loops",
       tags: ["loops", "guide", "javascript"],
+      timestamp: 1603235376921,
+      favourite: true,
     },
     tile3: {
       id: "tile3",
@@ -51,6 +55,8 @@ const STATE = {
       url: "https://www.youtube.com/video-example",
       title: "YouTube Video Article",
       tags: ["https", "arrays"],
+      timestamp: 1603235456821,
+      favourite: false,
     },
   },
 };
@@ -105,6 +111,8 @@ const tagsParent = document.getElementById("tags");
 const existTagsParent = document.getElementById("exist-tags");
 const errorDiv = document.querySelector("div#error-msg");
 const domainTagDiv = document.querySelector("div#domain-tag");
+const favIcon = document.getElementById("fav-img");
+let favouriteValue = false;
 
 function init() {
   addEventListeners();
@@ -118,6 +126,8 @@ init();
 function addEventListeners() {
   pasteEventListener();
   tagPlussesEventListener();
+  tileDatasetEventListerner();
+  favIconEventListener();
   tagInput.addEventListener("keydown", tagEnterKey);
   linkInput.addEventListener("keydown", backspaceClear);
 }
@@ -130,6 +140,8 @@ function pasteEventListener() {
     if (checkURL(urlFull)) {
       Utils.alertErrorMsg("Duplicate URL Detected!");
     } else {
+      Utils.toggleElementVisibility("error-msg", false);
+      Utils.toggleFavouriteStatus("true", favIcon);
       titleInput.value = "";
       const urlDomain = new URL(urlFull).hostname;
       const urlPath = new URL(urlFull).pathname;
@@ -137,8 +149,9 @@ function pasteEventListener() {
       Utils.toggleElementVisibility("submit-btn", true, "block");
       Utils.toggleElementVisibility("title-input", true);
       Utils.toggleElementVisibility("new-tag-input", true);
+      Utils.toggleElementVisibility("fav-img", true);
       pathIntoTitleInput(urlPath);
-      setFocusTitleInput();
+      setFocusLinkInput();
     }
   });
 }
@@ -175,6 +188,34 @@ function backspaceClear(key) {
   if (key.code === "Backspace") {
     clearFields();
   }
+}
+
+/**
+ * Event listener for tile elements that reads dataset containing URL and opens it in a new window when clicked
+ */
+function tileDatasetEventListerner() {
+  document.querySelectorAll(".tile-container").forEach((tile) => {
+    tile.addEventListener("click", (e) => {
+      e.preventDefault();
+      const { url } = e.currentTarget.dataset;
+      window.open(url, "_blank");
+    });
+  });
+}
+
+/**
+ * Event listerner for star image elements for updating the image and tile object when clicked
+ */
+function favIconEventListener() {
+  document.querySelectorAll(".favs-icon").forEach((star) => {
+    star.addEventListener("click", (e) => {
+      e.stopImmediatePropagation();
+      const { favourite } = star.dataset;
+      const { id } = star.dataset;
+      Utils.toggleFavouriteStatus(favourite, star);
+      favStatusUpdate(id, Boolean(favourite));
+    });
+  });
 }
 
 /**
@@ -225,6 +266,14 @@ function undo() {
   Utils.toggleElementVisibility("undo-img", false);
 }
 
+function addFav() {
+  const icon = document.getElementById("fav-img");
+  favouriteValue = !favouriteValue;
+  icon.src = favouriteValue
+    ? "./assets/img/star-filled-icon.png"
+    : "./assets/img/star-empty-icon.png";
+}
+
 function clearFields() {
   removeAllChildNodes(tagsParent);
   removeAllChildNodes(existTagsParent);
@@ -233,6 +282,8 @@ function clearFields() {
   Utils.toggleElementVisibility("clear", false);
   Utils.toggleElementVisibility("error-msg", false);
   Utils.toggleElementVisibility("domain-tag", false);
+  Utils.toggleElementVisibility("fav-img", false);
+  Utils.toggleFavouriteStatus(false, favIcon);
   linkInput.value = "";
   titleInput.value = "";
   tagInput.value = "";
@@ -249,11 +300,25 @@ function clearFields() {
  * @param {string} title - The title of the tile
  * @param {string} url - The URL of the tile
  */
-function createTile(title, url) {
+function createTile(title, url, favourite, id) {
+  if (favourite) {
+    favImg =
+      '<img class="favs-icon" src="./assets/img/star-filled-icon.png" data-favourite="true" data-id="' +
+      id +
+      '">';
+  } else {
+    favImg =
+      '<img class="favs-icon" src="./assets/img/star-empty-icon.png" data-favourite="false" data-id="' +
+      id +
+      '">';
+  }
+
   tileDiv =
-    '<div class="tile-container"><a href="' +
+    '<div class="tile-container" data-url="' +
     url +
-    '" target="_blank"><div class="tile"></div></a><div class="title"><a href=" ' +
+    '"><div class="tile">' +
+    favImg +
+    '</div><div class="title"><a href=" ' +
     url +
     '" target="_blank"><p>' +
     title +
@@ -263,10 +328,12 @@ function createTile(title, url) {
 
 function submit() {
   storeTags();
-  createTile(titleInput.value, linkInput.value);
+  createTile(titleInput.value, linkInput.value, favouriteValue);
   clearFields();
   Utils.toggleElementVisibility("title-input", false);
   setFocusLinkInput();
+  tileDatasetEventListerner();
+  favIconEventListener();
 }
 
 function pathIntoTitleInput(paste) {
@@ -288,6 +355,7 @@ function storeTags() {
   let existTags = document.getElementsByClassName("exist-tagged");
   let tileNo = Object.keys(STATE.tiles).length + 1;
   let newTile = "tile" + tileNo;
+  const now = new Date().getTime();
 
   // new tile object
   STATE.tiles[newTile] = {
@@ -296,6 +364,8 @@ function storeTags() {
     url: url,
     title: title,
     tags: [],
+    timestamp: now,
+    favourite: favouriteValue,
   };
 
   // adds new tags to tags object
@@ -325,9 +395,11 @@ function storeTags() {
 function printExistingTiles() {
   // Loop over all the STATE.tiles values
   for (const tile of Object.values(STATE.tiles)) {
-    const { title, url } = tile;
-    createTile(title, url);
+    const { title, url, favourite, id } = tile;
+    createTile(title, url, favourite, id);
   }
+  tileDatasetEventListerner();
+  favIconEventListener();
 }
 printExistingTiles();
 
@@ -341,4 +413,13 @@ function checkURL(link) {
     }
   }
   return false;
+}
+
+/**
+ * Updates the favourite property in tile objects
+ * @param {string} id - The data-id value refering to the tile object key, against a star icon
+ * @param {boolean} currFav - The current value refering to favourite status of a tile
+ */
+function favStatusUpdate(id, currFav) {
+  STATE.tiles[id].favourite = currFav ? false : true;
 }
