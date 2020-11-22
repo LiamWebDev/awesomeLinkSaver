@@ -213,7 +213,7 @@ function favIconEventListener() {
       const { favourite } = star.dataset;
       const { id } = star.dataset;
       Utils.toggleFavouriteStatus(favourite, star);
-      favStatusUpdate(id, favourite);
+      favStatusUpdate(id, Boolean(favourite));
     });
   });
 }
@@ -303,12 +303,12 @@ function clearFields() {
 function createTile(title, url, favourite, id) {
   if (favourite) {
     favImg =
-      '<img class="favs-icon" src="file:///c:/Users/Liam/Desktop/LinkSaver/assets/img/star-filled-icon.png" data-favourite="true" data-id="' +
+      '<img class="favs-icon" src="./assets/img/star-filled-icon.png" data-favourite="true" data-id="' +
       id +
       '">';
   } else {
     favImg =
-      '<img class="favs-icon" src="file:///c:/Users/Liam/Desktop/LinkSaver/assets/img/star-empty-icon.png" data-favourite="false" data-id="' +
+      '<img class="favs-icon" src="./assets/img/star-empty-icon.png" data-favourite="false" data-id="' +
       id +
       '">';
   }
@@ -418,10 +418,8 @@ function checkURL(link) {
 /**
  * Updates the favourite property in tile objects
  * @param {string} id - The data-id value refering to the tile object key, against a star icon
- * @param {string} icon - The data-icon value refering to favourite status, against a star icon
+ * @param {boolean} currFav - The current value refering to favourite status of a tile
  */
-function favStatusUpdate(id, icon) {
-  let bool = icon === "true" ? false : true;
-  STATE.tiles[id].favourite = bool;
-  console.log(STATE.tiles[id]);
+function favStatusUpdate(id, currFav) {
+  STATE.tiles[id].favourite = currFav ? false : true;
 }
