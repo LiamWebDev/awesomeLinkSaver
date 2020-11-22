@@ -40,10 +40,9 @@ function alertErrorMsg(message) {
  * @param {element} element - The star icon image element
  */
 function toggleFavouriteStatus(status, element) {
-  element.src =
-    status === "false"
-      ? "./assets/img/star-filled-icon.png"
-      : "./assets/img/star-empty-icon.png";
+  element.src = status
+    ? "./assets/img/star-empty-icon.png"
+    : "./assets/img/star-filled-icon.png";
 
-  element.dataset.favourite = status === "false" ? "true" : "false";
+  element.dataset.favourite = status ? "" : "true";
 }
