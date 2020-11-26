@@ -7,7 +7,7 @@ body {
   max-width: 1600px;
   margin: auto;
   background: #eff0f1;
-  height: 800px;
+  height: auto;
 }
 header {
   height: 45px;
@@ -37,14 +37,13 @@ div.hdr-btn {
 #input {
   display: flex;
   align-items: center;
-  top: 100px;
   position: relative;
 }
 #tags {
   display: flex;
   align-items: center;
   justify-content: center;
-  top: 80px;
+  height: 50px;
   position: relative;
 }
 .tag {
@@ -71,13 +70,13 @@ div.hdr-btn {
 #input-line {
   display: flex;
   justify-content: center;
+  height: 75px;
 }
 
 #undo {
   display: flex;
   align-items: center;
   cursor: pointer;
-  top: 100px;
   position: relative;
 }
 
@@ -91,8 +90,8 @@ div.hdr-btn {
 #submit-div {
   display: flex;
   align-items: center;
+  height: 55px;
   justify-content: center;
-  top: 155px;
   position: relative;
 }
 
@@ -136,12 +135,12 @@ div.hdr-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  top: 170px;
   position: relative;
   font-size: 16px;
   font-family: verdana;
   cursor: pointer;
   display: none;
+  height: 30px;
 }
 
 #tiles {
@@ -149,7 +148,8 @@ div.hdr-btn {
   align-items: center;
   justify-content: center;
   position: relative;
-  top: 250px;
+  height: auto;
+  margin-top: 40px;
 }
 
 .tile {
@@ -176,7 +176,7 @@ div.hdr-btn {
 #title-input {
   display: none;
   justify-content: center;
-  top: 140px;
+  height: 60px;
   position: relative;
 }
 
@@ -204,8 +204,9 @@ div.hdr-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  top: 58px;
+  height: 50px;
   position: relative;
+  margin-top: 6px;
 }
 .exist-tag {
   padding: 0px 28px;
@@ -224,8 +225,8 @@ div.hdr-btn {
 #new-tag-input {
   display: none;
   justify-content: center;
-  top: 120px;
   position: relative;
+  height: 60px;
 }
 
 #new-tag-input input {
@@ -252,7 +253,6 @@ div.hdr-btn {
   display: none;
   align-items: center;
   justify-content: center;
-  top: 95px;
   position: relative;
   font-family: verdana;
   font-size: 16px;
@@ -270,7 +270,6 @@ div.hdr-btn {
   display: none;
   align-items: center;
   justify-content: center;
-  top: 39px;
   position: relative;
   padding: 9px 29px;
   background-color: #16bf13;
@@ -280,6 +279,7 @@ div.hdr-btn {
   font-family: verdana;
   width: max-content;
   margin: 0 auto;
+  margin-top: 50px;
 }
 h2 {
   font-size: 23px;
@@ -294,7 +294,6 @@ h2 {
   display: flex;
   align-items: center;
   cursor: pointer;
-  top: 100px;
   position: relative;
   padding: 0px 0px 7px 4px;
 }
