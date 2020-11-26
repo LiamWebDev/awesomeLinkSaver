@@ -139,7 +139,9 @@ function pasteEventListener() {
     Utils.toggleElementVisibility("clear", true);
     if (checkURL(urlFull)) {
       Utils.alertErrorMsg("Duplicate URL Detected!");
+      Utils.toggleElementVisibility("submit-div", false);
     } else {
+      Utils.toggleElementVisibility("submit-div", true);
       Utils.toggleElementVisibility("error-msg", false);
       Utils.toggleFavouriteStatus("true", favIcon);
       titleInput.value = "";
@@ -283,6 +285,7 @@ function clearFields() {
   Utils.toggleElementVisibility("error-msg", false);
   Utils.toggleElementVisibility("domain-tag", false);
   Utils.toggleElementVisibility("fav-img", false);
+  Utils.toggleElementVisibility("submit-div", true);
   Utils.toggleFavouriteStatus(false, favIcon);
   linkInput.value = "";
   titleInput.value = "";
