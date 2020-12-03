@@ -454,14 +454,18 @@ function checkURL(link) {
   return false;
 }
 
-const totalsArray = [];
 const showLatestTags = () => {
-  Object.entries(STATE.tags).map(([tag, value]) => {
-    totalsArray.push({ Tag: tag, Qty: value.tiles.length });
-  });
-  // a.Qty - b.Qty or b.Qty - a.Qty
-  totalsArray.sort((a, b) => (a.Qty > b.Qty ? -1 : b.Qty > a.Qty ? 1 : 0));
-  console.log("--> totalsArray: ", totalsArray.length);
+  // const totalsArray = [];
+  // Object.entries(STATE.tags).map(([tag, value]) => {
+  //   totalsArray.push({ Tag: tag, Qty: value.tiles.length });
+  // });
+  // totalsArray.sort((a, b) => b.Qty - a.Qty);
+
+  const totalsArray = Object.entries(STATE.tags)
+    .reduce((acc, [tag, value]) => {
+      return acc.concat({ Tag: tag, Qty: value.tiles.length });
+    }, [])
+    .sort((a, b) => b.Qty - a.Qty);
 
   for (const tag of totalsArray) {
     const tagEntry =
@@ -473,9 +477,6 @@ const showLatestTags = () => {
     const tagContainer = document.querySelector(".tag-totals");
     tagContainer.insertAdjacentHTML("beforeend", tagEntry);
   }
-  console.log("Array before slice: ", totalsArray);
-  totalsArray.splice(0, totalsArray.length);
-  console.log("Array after slice: ", totalsArray);
 };
 showLatestTags();
 
