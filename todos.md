@@ -1,0 +1,2 @@
+- make "latest tags" add until maximun number.
+- recover "all tiles/links"
