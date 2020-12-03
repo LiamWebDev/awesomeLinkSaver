@@ -6,9 +6,10 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile:sass": "node-sass ./sass/main.scss ./styles/main.css",
-    "build": "npm run compile:sass",
+    "build:sass": "npm run compile:sass",
     "dev:watch": "node-sass ./sass/main.scss ./styles/main.css -w",
-    "start": "node src/server/index.js"
+    "start": "node src/server/index.js",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,8 @@
     "node-sass": "^5.0.0"
   },
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "webpack": "^5.9.0",
+    "webpack-cli": "^4.2.0"
   }
 }
