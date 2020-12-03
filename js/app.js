@@ -25,7 +25,7 @@ const STATE = {
       tiles: ["tile3"],
     },
     javascript: {
-      tiles: ["tile2"],
+      tiles: ["tile2", "tile1"],
     },
   },
   exceptions: ["to", "the", "best"],
@@ -112,6 +112,7 @@ const existTagsParent = document.getElementById("exist-tags");
 const errorDiv = document.querySelector("div#error-msg");
 const domainTagDiv = document.querySelector("div#domain-tag");
 const favIcon = document.getElementById("fav-img");
+const tagTotalsDiv = document.querySelector(".tag-totals");
 let favouriteValue = false;
 
 function init() {
@@ -126,6 +127,8 @@ init();
 function addEventListeners() {
   pasteEventListener();
   tagPlussesEventListener();
+  tileDatasetEventListerner();
+  favIconEventListener();
   tagInput.addEventListener("keydown", tagEnterKey);
   linkInput.addEventListener("keydown", backspaceClear);
 }
@@ -137,18 +140,30 @@ function pasteEventListener() {
     Utils.toggleElementVisibility("clear", true);
     if (checkURL(urlFull)) {
       Utils.alertErrorMsg("Duplicate URL Detected!");
+      Utils.toggleElementVisibility("submit-div", false);
     } else {
+      Utils.toggleElementVisibility("submit-div", true);
       Utils.toggleElementVisibility("error-msg", false);
+      Utils.toggleFavouriteStatus("true", favIcon);
       titleInput.value = "";
-      const urlDomain = new URL(urlFull).hostname;
-      const urlPath = new URL(urlFull).pathname;
-      createAllTags(urlDomain, urlPath);
-      Utils.toggleElementVisibility("submit-btn", true, "block");
-      Utils.toggleElementVisibility("title-input", true);
-      Utils.toggleElementVisibility("new-tag-input", true);
-      Utils.toggleElementVisibility("fav-img", true);
-      pathIntoTitleInput(urlPath);
-      setFocusLinkInput();
+      try {
+        const urlDomain = new URL(urlFull).hostname;
+        const urlPath = new URL(urlFull).pathname;
+        createAllTags(urlDomain, urlPath);
+        Utils.toggleElementVisibility("submit-btn", true, "block");
+        Utils.toggleElementVisibility("title-input", true);
+        Utils.toggleElementVisibility("new-tag-input", true);
+        Utils.toggleElementVisibility("fav-img", true);
+        pathIntoTitleInput(urlPath);
+        setFocusLinkInput();
+      } catch (error) {
+        let { message } = error;
+        if (message === "Failed to construct 'URL': Invalid URL") {
+          message = "Please provide a proper URL";
+        }
+        console.error("[catched] error : ", error);
+        Utils.alertErrorMsg(`Ups! I didn't like that!: ${message}`);
+      }
     }
   });
 }
@@ -185,6 +200,35 @@ function backspaceClear(key) {
   if (key.code === "Backspace") {
     clearFields();
   }
+}
+
+/**
+ * Event listener for tile elements that reads dataset containing URL and opens it in a new window when clicked
+ */
+function tileDatasetEventListerner() {
+  document.querySelectorAll(".tile-container").forEach((tile) => {
+    tile.addEventListener("click", (e) => {
+      e.preventDefault();
+      const { url } = e.currentTarget.dataset;
+      window.open(url, "_blank");
+    });
+  });
+}
+
+/**
+ * Event listerner for star image elements for updating the image and tile object when clicked
+ */
+function favIconEventListener() {
+  document.querySelectorAll(".favs-icon").forEach((star) => {
+    star.addEventListener("click", (e) => {
+      e.stopImmediatePropagation();
+      console.log("star: ", star);
+      const { favourite } = star.dataset;
+      const { id } = star.dataset;
+      Utils.toggleFavouriteStatus(favourite, star);
+      favStatusUpdate(id, Boolean(favourite));
+    });
+  });
 }
 
 /**
@@ -236,28 +280,25 @@ function undo() {
 }
 
 function addFav() {
-  if (!favouriteValue) {
-    const icon = document.getElementById("fav-img");
-    icon.src = "./assets/img/star-filled-icon.png";
-    favouriteValue = true;
-  } else {
-    const icon = document.getElementById("fav-img");
-    icon.src = "./assets/img/star-empty-icon.png";
-    favouriteValue = false;
-  }
+  const icon = document.getElementById("fav-img");
+  favouriteValue = !favouriteValue;
+  icon.src = favouriteValue
+    ? "./assets/img/star-filled-icon.png"
+    : "./assets/img/star-empty-icon.png";
 }
 
 function clearFields() {
   removeAllChildNodes(tagsParent);
   removeAllChildNodes(existTagsParent);
   removeAllChildNodes(domainTagDiv);
+  removeAllChildNodes(tagTotalsDiv);
   Utils.toggleElementVisibility("submit-btn", false);
   Utils.toggleElementVisibility("clear", false);
   Utils.toggleElementVisibility("error-msg", false);
   Utils.toggleElementVisibility("domain-tag", false);
   Utils.toggleElementVisibility("fav-img", false);
-  favouriteValue = false;
-  favIcon.src = "./assets/img/star-empty-icon.png";
+  Utils.toggleElementVisibility("submit-div", true);
+  Utils.toggleFavouriteStatus(false, favIcon);
   linkInput.value = "";
   titleInput.value = "";
   tagInput.value = "";
@@ -274,19 +315,25 @@ function clearFields() {
  * @param {string} title - The title of the tile
  * @param {string} url - The URL of the tile
  */
-function createTile(title, url, favourite) {
+function createTile(title, url, favourite, id) {
   if (favourite) {
-    favImg = '<img class="favs-icon" src="./assets/img/star-filled-icon.png">';
+    favImg =
+      '<img class="favs-icon" src="./assets/img/star-filled-icon.png" data-favourite="true" data-id="' +
+      id +
+      '">';
   } else {
-    favImg = '<img class="favs-icon" src="./assets/img/star-empty-icon.png">';
+    favImg =
+      '<img class="favs-icon" src="./assets/img/star-empty-icon.png" data-favourite="false" data-id="' +
+      id +
+      '">';
   }
 
   tileDiv =
-    '<div class="tile-container"><a href="' +
+    '<div class="tile-container" data-url="' +
     url +
-    '" target="_blank"><div class="tile">' +
+    '"><div class="tile">' +
     favImg +
-    '</div></a><div class="title"><a href=" ' +
+    '</div><div class="title"><a href=" ' +
     url +
     '" target="_blank"><p>' +
     title +
@@ -300,6 +347,10 @@ function submit() {
   clearFields();
   Utils.toggleElementVisibility("title-input", false);
   setFocusLinkInput();
+  tileDatasetEventListerner();
+  favIconEventListener();
+  showLatestTags();
+  console.log("Tags: ", STATE.tags);
 }
 
 function pathIntoTitleInput(paste) {
@@ -321,8 +372,7 @@ function storeTags() {
   let existTags = document.getElementsByClassName("exist-tagged");
   let tileNo = Object.keys(STATE.tiles).length + 1;
   let newTile = "tile" + tileNo;
-  const date = new Date();
-  const timestamp = date.getTime();
+  const now = new Date().getTime();
 
   // new tile object
   STATE.tiles[newTile] = {
@@ -331,7 +381,7 @@ function storeTags() {
     url: url,
     title: title,
     tags: [],
-    timestamp: timestamp,
+    timestamp: now,
     favourite: favouriteValue,
   };
 
@@ -362,9 +412,11 @@ function storeTags() {
 function printExistingTiles() {
   // Loop over all the STATE.tiles values
   for (const tile of Object.values(STATE.tiles)) {
-    const { title, url, favourite } = tile;
-    createTile(title, url, favourite);
+    const { title, url, favourite, id } = tile;
+    createTile(title, url, favourite, id);
   }
+  tileDatasetEventListerner();
+  favIconEventListener();
 }
 printExistingTiles();
 
@@ -380,16 +432,34 @@ function checkURL(link) {
   return false;
 }
 
+const totalsArray = [];
 const showLatestTags = () => {
   Object.entries(STATE.tags).map(([tag, value]) => {
+    totalsArray.push({ Tag: tag, Qty: value.tiles.length });
+  });
+  totalsArray.sort((a, b) => (a.Qty > b.Qty ? -1 : b.Qty > a.Qty ? 1 : 0));
+
+  for (const tag of totalsArray) {
     const tagEntry =
       '<div class="tile-container"><div class="tile"><div class="tag-qty">' +
-      value.tiles.length +
+      tag.Qty +
       '</div></div><div class="title"><p>' +
-      tag +
+      tag.Tag +
       "</p></div></div>";
-    const tagContainer = document.getElementById("tag-totals");
+    const tagContainer = document.querySelector(".tag-totals");
     tagContainer.insertAdjacentHTML("beforeend", tagEntry);
-  });
+  }
+  console.log("Array before slice: ", totalsArray);
+  totalsArray.splice(0, arr.length);
+  console.log("Array after slice: ", totalsArray);
 };
 showLatestTags();
+
+/**
+ * Updates the favourite property in tile objects
+ * @param {string} id - The data-id value refering to the tile object key, against a star icon
+ * @param {boolean} currFav - The current value refering to favourite status of a tile
+ */
+function favStatusUpdate(id, currFav) {
+  STATE.tiles[id].favourite = currFav ? false : true;
+}

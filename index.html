@@ -3,58 +3,65 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./styles/linkSaver.css" />
+    <link rel="stylesheet" href="./styles/main.css" />
     <title>Link Saver</title>
   </head>
   <body>
-    <header>
-      <div class="hdr-btn">Courses</div>
-      <div class="hdr-btn">LinkSaver</div>
-      <div class="hdr-btn">Path</div>
-      <div id="acc-icon"><img src="./assets/img/account-icon.png" /></div>
+    <header class="header">
+      <div class="header-btn">Courses</div>
+      <div class="header-btn">LinkSaver</div>
+      <div class="header-btn">Path</div>
+      <div>
+        <img class="icon icon-avatar" src="./assets/img/account-icon.png" />
+      </div>
     </header>
 
-    <div id="domain-tag"></div>
-    <div id="exist-tags"></div>
-    <div id="tags"></div>
-    <div id="error-msg"></div>
+    <div id="domain-tag" class="domain-tag"></div>
+    <div id="exist-tags" class="exist-tags"></div>
+    <div id="tags" class="tags"></div>
+    <div id="error-msg" class="error-msg"></div>
 
-    <div id="input-line">
-      <div id="input">
+    <div class="input-line">
+      <div class="input">
         <input
           id="link-input"
+          class="link-input"
           name="link-input"
-          autofocus
           placeholder="Paste URL here..."
+          autofocus
         />
       </div>
-      <div id="undo" onclick="undo()">
-        <img id="undo-img" src="./assets/img/undo-icon.png" />
+      <div id="undo" onclick="undo()" class="undo">
+        <img id="undo-img" class="undo-img" src="./assets/img/undo-icon.png" />
       </div>
-      <div id="fav" onclick="addFav()">
-        <img id="fav-img" src="./assets/img/star-empty-icon.png" />
+      <div id="fav" class="fav" onclick="addFav()">
+        <img
+          id="fav-img"
+          class="fav-img"
+          src="./assets/img/star-empty-icon.png"
+        />
       </div>
     </div>
 
-    <div id="new-tag-input">
+    <div id="new-tag-input" class="new-tag-input">
       <label for="new-tag-name">New Tag:</label>
       <input type="text" id="new-tag-name" name="new-tag-input" />
     </div>
 
-    <div id="title-input">
+    <div id="title-input" class="title-input">
       <label for="tile-title">Title:</label>
       <input type="text" id="tile-title" name="title-input" />
     </div>
 
-    <div id="submit-div">
+    <div class="submit-btn-container" id="submit-div">
       <button id="submit-btn" onclick="submit()">Submit</button>
     </div>
-    <div id="clear" onclick="clearFields()">Clear Input</div>
-    <div id="tiles">
+    <div id="clear" class="clear" onclick="clearFields()">Clear Input</div>
+    <div id="tiles" class="tiles">
       <h2>Latest Tags</h2>
     </div>
 
-    <div id="tag-totals">
+    <div class="tag-totals">
       <h2>Tags By Total</h2>
     </div>
 
