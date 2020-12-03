@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "compile:sass": "node-sass ./sass/main.scss ./styles/main.css",
     "build": "npm run compile:sass",
-    "dev:watch": "node-sass ./sass/main.scss ./styles/main.css -w"
+    "dev:watch": "node-sass ./sass/main.scss ./styles/main.css -w",
+    "start": "node src/server/index.js"
   },
   "repository": {
     "type": "git",
@@ -22,5 +23,8 @@
   "homepage": "https://github.com/LiamWebDev/awesomeLinkSaver#readme",
   "devDependencies": {
     "node-sass": "^5.0.0"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
   }
 }
