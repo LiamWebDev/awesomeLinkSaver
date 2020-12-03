@@ -57,6 +57,12 @@
   - create babelrc file
   - we need to make webpack use babel (and use tools of webpack more advanced) -> Loaders
 
+# step 3: plugin for index
+
+- Also to implement basically the index.html properly we need the HtmlWebPackPlugin
+- app.use(express.static("src/client"));
+- error on my code: app.use(express.static("dist")); // was what we wanted
+
 # final step
 
 - move the code link awesome to this
