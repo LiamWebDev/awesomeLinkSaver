@@ -41,6 +41,22 @@
     - webpack created the `dist` folder and inside a `main.js` file.
     - the content of the main.js is the content of our entry file, an alert.
 
+# step 2: Babel to the rescue!
+
+- So now we see what `output` means: The distribution folder.
+- But this is the correct output or bundle for our application?
+
+  - The main file does not contain our js or css files.
+  - our app is not connected to the distribution folder.
+
+- Fix #1: Now we need to add a reference to the index.js file on the index.html
+  `<script type="text/javascript" src="../../../dist/main.js"></script>`
+- Fix #2: Make the index.js import those files, but "how require/import?" .
+  - babel to the rescue, :D
+    `npm i -D @babel/core @babel/preset-env babel-loader`
+  - create babelrc file
+  - we need to make webpack use babel (and use tools of webpack more advanced) -> Loaders
+
 # final step
 
 - move the code link awesome to this
