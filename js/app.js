@@ -342,8 +342,8 @@ function createTile(title, url, favourite, id) {
 }
 
 function submit() {
-  storeTags();
-  createTile(titleInput.value, linkInput.value, favouriteValue);
+  const tileId = storeTags();
+  createTile(titleInput.value, linkInput.value, favouriteValue, tileId);
   clearFields();
   Utils.toggleElementVisibility("title-input", false);
   setFocusLinkInput();
@@ -364,15 +364,15 @@ function pathIntoTitleInput(paste) {
   }
 }
 
+/**
+ * @returns {string} - The id of thew new tile for UI purpsoses
+ */
 function storeTags() {
   const currentDomain = document.getElementById("domain-tag").innerHTML;
   const url = linkInput.value;
   const title = titleInput.value;
   let newTags = document.getElementsByClassName("tagged");
   let existTags = document.getElementsByClassName("exist-tagged");
-
-  console.log("new tags: ", newTags);
-  console.log("exist tags: ", existTags);
 
   let tileNo = Object.keys(STATE.tiles).length + 1;
   let newTile = "tile" + tileNo;
@@ -391,11 +391,6 @@ function storeTags() {
 
   const allTags = mergeArrays(Array.from(newTags), Array.from(existTags));
 
-  // const allTags = mergeArrays(
-  //   Array.from(newTags) || [],
-  //   Array.from(existTags) || []
-  // );
-
   for (var i = 0; i < allTags.length; i++) {
     newTagProp = allTags[i].textContent;
     if (!STATE.tags[newTagProp]) {
@@ -404,28 +399,9 @@ function storeTags() {
     STATE.tags[newTagProp].tiles.push(newTile);
     STATE.tiles[newTile].tags.push(newTagProp);
   }
-
-  // adds new tags to tags object
-  // and adds new tags to new tile object
-  // for (var i = 0; i < newTags.length; i++) {
-  //   newTagProp = newTags[i].textContent;
-  //   if (!STATE.tags[newTagProp]) {
-  //     STATE.tags[newTagProp] = { tiles: [] };
-  //   }
-  //   STATE.tags[newTagProp].tiles.push(newTile);
-  //   STATE.tiles[newTile].tags.push(newTagProp);
-  // }
-
-  // // adds new tile to existing tag object
-  // // and adds tag to new tile object
-  // for (var i = 0; i < existTags.length; i++) {
-  //   existTagProp = existTags[i].textContent;
-  //   STATE.tags[existTagProp].tiles.push(newTile);
-  //   STATE.tiles[newTile].tags.push(existTagProp);
-  // }
-
   // creates or updates domain object in state
   updateDomainInState(currentDomain, newTile);
+  return newTile;
 }
 
 /**
