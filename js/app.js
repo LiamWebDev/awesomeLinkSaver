@@ -3,7 +3,7 @@ const STATE = {
   domains: {
     "www.reddit.co.uk": {
       domain: "www.reddit.co.uk",
-      tiles: ["tile1"],
+      tiles: ["a", "b", "tile3", "tile1", "tile4", "tile5"],
     },
     "medium.com": {
       domain: "medium.com",
@@ -472,10 +472,37 @@ const mergeArrays = (arrA, arrB) => [
  * @param {string} tileRef - The data-id value refering to tile object id
  */
 function deleteTile(obj, tileRef) {
-  delete STATE.tiles[tileRef];
-  tileContainer = obj.parentNode.parentNode;
-  tileContainer.remove();
-  console.log("Tiles: ", STATE.tiles);
+  console.log("tileRef: ", tileRef);
+
+  // Show UI changes
+  const tileContainer = obj.parentNode.parentNode;
+  const prevDisplay = tileContainer.style.display;
+  tileContainer.style.display = "none";
+
+  try {
+    const tile = STATE.tiles[tileRef];
+
+    // Delete STATE domains
+    let index = STATE.domains[tile.domain].tiles.indexOf(tile.id);
+    STATE.domains[tile.domain].tiles.splice(index, 1);
+
+    // Delete STATE tags
+    tile.tags.forEach((tag) => {
+      if (STATE.tags[tag]) {
+        index = STATE.tags[tag].tiles.indexOf(tile.id);
+        STATE.tags[tag].tiles.splice(index, 1);
+      }
+    });
+
+    // Delete STATE Tile
+    delete STATE.tiles[tileRef];
+
+    // Delete UI
+    tileContainer.remove();
+  } catch (error) {
+    console.log("errror happened: ", error);
+    tileContainer.style.display = prevDisplay;
+  }
 }
 
 /**
