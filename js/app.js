@@ -222,9 +222,9 @@ function favIconEventListener() {
   document.querySelectorAll(".favs-icon").forEach((star) => {
     star.addEventListener("click", (e) => {
       e.stopImmediatePropagation();
-      console.log("star: ", star);
       const { favourite } = star.dataset;
       const { id } = star.dataset;
+
       Utils.toggleFavouriteStatus(favourite, star);
       favStatusUpdate(id, Boolean(favourite));
     });
@@ -323,7 +323,7 @@ function createTile(title, url, favourite, id) {
       '">';
   } else {
     favImg =
-      '<img class="favs-icon" src="./assets/img/star-empty-icon.png" data-favourite="false" data-id="' +
+      '<img class="favs-icon" src="./assets/img/star-empty-icon.png" data-favourite="" data-id="' +
       id +
       '">';
   }
@@ -350,7 +350,6 @@ function submit() {
   tileDatasetEventListerner();
   favIconEventListener();
   showLatestTags();
-  console.log("Tags: ", STATE.tags);
 }
 
 function pathIntoTitleInput(paste) {
@@ -371,9 +370,6 @@ function storeTags() {
   let newTags = document.getElementsByClassName("tagged");
   let existTags = document.getElementsByClassName("exist-tagged");
 
-  console.log("new tags: ", newTags);
-  console.log("exist tags: ", existTags);
-
   let tileNo = Object.keys(STATE.tiles).length + 1;
   let newTile = "tile" + tileNo;
   const now = new Date().getTime();
@@ -391,11 +387,6 @@ function storeTags() {
 
   const allTags = mergeArrays(Array.from(newTags), Array.from(existTags));
 
-  // const allTags = mergeArrays(
-  //   Array.from(newTags) || [],
-  //   Array.from(existTags) || []
-  // );
-
   for (var i = 0; i < allTags.length; i++) {
     newTagProp = allTags[i].textContent;
     if (!STATE.tags[newTagProp]) {
@@ -404,25 +395,6 @@ function storeTags() {
     STATE.tags[newTagProp].tiles.push(newTile);
     STATE.tiles[newTile].tags.push(newTagProp);
   }
-
-  // adds new tags to tags object
-  // and adds new tags to new tile object
-  // for (var i = 0; i < newTags.length; i++) {
-  //   newTagProp = newTags[i].textContent;
-  //   if (!STATE.tags[newTagProp]) {
-  //     STATE.tags[newTagProp] = { tiles: [] };
-  //   }
-  //   STATE.tags[newTagProp].tiles.push(newTile);
-  //   STATE.tiles[newTile].tags.push(newTagProp);
-  // }
-
-  // // adds new tile to existing tag object
-  // // and adds tag to new tile object
-  // for (var i = 0; i < existTags.length; i++) {
-  //   existTagProp = existTags[i].textContent;
-  //   STATE.tags[existTagProp].tiles.push(newTile);
-  //   STATE.tiles[newTile].tags.push(existTagProp);
-  // }
 
   // creates or updates domain object in state
   updateDomainInState(currentDomain, newTile);
@@ -455,12 +427,6 @@ function checkURL(link) {
 }
 
 const showLatestTags = () => {
-  // const totalsArray = [];
-  // Object.entries(STATE.tags).map(([tag, value]) => {
-  //   totalsArray.push({ Tag: tag, Qty: value.tiles.length });
-  // });
-  // totalsArray.sort((a, b) => b.Qty - a.Qty);
-
   const totalsArray = Object.entries(STATE.tags)
     .reduce((acc, [tag, value]) => {
       return acc.concat({ Tag: tag, Qty: value.tiles.length });
@@ -493,16 +459,3 @@ const mergeArrays = (arrA, arrB) => [
   ...arrA,
   ...arrB.filter((el) => !arrA.includes(el)),
 ];
-
-// Other ways of merging
-
-// const concatArrays = (arrA, arrB) => [...arrA, ...arrB];
-// const mergeArrays1 = (arrA, arrB) =>
-//   concatArrays(
-//     arrA,
-//     arrB.filter((el) => !arrA.includes(el))
-//   );
-
-// const mergeArrays2 = (arrA, arrB) => [...new Set([...arrA, ...arrB])];
-
-// const mergeArrays3 = (arrA, arrB) => [...new Set(concatArrays(arrA, arrB))];
