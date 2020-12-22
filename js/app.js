@@ -328,11 +328,15 @@ function createTile(title, url, favourite, id) {
       '">';
   }
 
+  binImg =
+    '<img class="bin" src="./assets/img/bin-icon.webp" data-id="' + id + '">';
+
   tileDiv =
     '<div class="tile-container" data-url="' +
     url +
     '"><div class="tile">' +
     favImg +
+    binImg +
     '</div><div class="title"><a href=" ' +
     url +
     '" target="_blank"><p>' +
@@ -462,3 +466,28 @@ const mergeArrays = (arrA, arrB) => [
   ...arrA,
   ...arrB.filter((el) => !arrA.includes(el)),
 ];
+
+/**
+ * Deletes the tile reference from the appropriate objects
+ * @param {string} tileRef - The data-id value refering to tile object id
+ */
+function deleteTile(obj, tileRef) {
+  delete STATE.tiles[tileRef];
+  tileContainer = obj.parentNode.parentNode;
+  tileContainer.remove();
+  console.log("Tiles: ", STATE.tiles);
+}
+
+/**
+ * Event listener for bin icon that deletes relevant objects and properties
+ */
+function deleteEventListener() {
+  document.querySelectorAll(".bin").forEach((bin) => {
+    bin.addEventListener("click", (e) => {
+      e.stopImmediatePropagation();
+      const { id } = bin.dataset;
+      deleteTile(bin, id);
+    });
+  });
+}
+deleteEventListener();
