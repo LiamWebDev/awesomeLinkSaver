@@ -342,8 +342,8 @@ function createTile(title, url, favourite, id) {
 }
 
 function submit() {
-  storeTags();
-  createTile(titleInput.value, linkInput.value, favouriteValue);
+  const tileId = storeTags();
+  createTile(titleInput.value, linkInput.value, favouriteValue, tileId);
   clearFields();
   Utils.toggleElementVisibility("title-input", false);
   setFocusLinkInput();
@@ -363,6 +363,9 @@ function pathIntoTitleInput(paste) {
   }
 }
 
+/**
+ * @returns {string} - The id of thew new tile for UI purpsoses
+ */
 function storeTags() {
   const currentDomain = document.getElementById("domain-tag").innerHTML;
   const url = linkInput.value;
@@ -395,9 +398,9 @@ function storeTags() {
     STATE.tags[newTagProp].tiles.push(newTile);
     STATE.tiles[newTile].tags.push(newTagProp);
   }
-
   // creates or updates domain object in state
   updateDomainInState(currentDomain, newTile);
+  return newTile;
 }
 
 /**
