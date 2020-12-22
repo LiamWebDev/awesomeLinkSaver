@@ -1,5 +1,8 @@
 /* globals Utils */
 const STATE = {
+  config: {
+    order: "descending",
+  },
   domains: {
     "www.reddit.co.uk": {
       domain: "www.reddit.co.uk",
@@ -46,7 +49,7 @@ const STATE = {
         "https://medium.com/@js_tut/the-complete-guide-to-loops-cfa6522157e9",
       title: "The Complete Guide To Loops",
       tags: ["loops", "guide", "javascript"],
-      timestamp: 1603235376921,
+      timestamp: 1603235293105,
       favourite: true,
     },
     tile3: {
@@ -55,7 +58,7 @@ const STATE = {
       url: "https://www.youtube.com/video-example",
       title: "YouTube Video Article",
       tags: ["https", "arrays"],
-      timestamp: 1603235456821,
+      timestamp: 1603235293106,
       favourite: false,
     },
   },
@@ -342,7 +345,11 @@ function createTile(title, url, favourite, id) {
     '" target="_blank"><p>' +
     title +
     "</p></a></div></div>";
-  document.getElementById("tiles").innerHTML += tileDiv;
+  // document.getElementById("tiles").innerHTML += tileDiv;
+  const insertAt =
+    STATE.config.order === "descending" ? "afterbegin" : "beforeend";
+  document.getElementById("tiles").insertAdjacentHTML(insertAt, tileDiv);
+  // afterbegin
 }
 
 function submit() {
@@ -353,7 +360,7 @@ function submit() {
   setFocusLinkInput();
   tileDatasetEventListerner();
   favIconEventListener();
-  showLatestTags();
+  showTagsByTotal();
 }
 
 function pathIntoTitleInput(paste) {
@@ -410,16 +417,19 @@ function storeTags() {
 /**
  * Retrieves the tiles from STATE and prints them on the UI on startup
  */
-function printExistingTiles() {
+function printLatestTiles() {
   // Loop over all the STATE.tiles values
-  for (const tile of Object.values(STATE.tiles)) {
+  const orderedTiles = Object.values(STATE.tiles).sort(
+    (a, b) => b.timestamp - a.timestamp
+  );
+  for (const tile of orderedTiles) {
     const { title, url, favourite, id } = tile;
     createTile(title, url, favourite, id);
   }
   tileDatasetEventListerner();
   favIconEventListener();
 }
-printExistingTiles();
+printLatestTiles();
 
 /**
  * Checks whether the pasted URL already exists in the tiles object
@@ -433,7 +443,7 @@ function checkURL(link) {
   return false;
 }
 
-const showLatestTags = () => {
+const showTagsByTotal = () => {
   const totalsArray = Object.entries(STATE.tags)
     .reduce((acc, [tag, value]) => {
       return acc.concat({ Tag: tag, Qty: value.tiles.length });
@@ -449,9 +459,13 @@ const showLatestTags = () => {
       "</p></div></div>";
     const tagContainer = document.querySelector(".tag-totals");
     tagContainer.insertAdjacentHTML("beforeend", tagEntry);
+    // document.getElementById("tag-totals-container").appendChild(tagEntry);
+    // document
+    //   .getElementById("tag-totals-container")
+    //   .insertAdjacentHTML("beforeend", tagEntry);
   }
 };
-showLatestTags();
+showTagsByTotal();
 
 /**
  * Updates the favourite property in tile objects
