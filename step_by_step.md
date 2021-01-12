@@ -59,7 +59,25 @@
 
 # step 3: plugin for index
 
-- Also to implement basically the index.html properly we need the HtmlWebPackPlugin
+- We need to serve the index.html and import the staff from the other files
+
+What are Loaders ? - Turn one file type into another
+
+```
+Out of the box, webpack only understands JavaScript and JSON files. Loaders allow
+webpack to process other types of files and convert them into valid modules that
+can be consumed by your application.
+```
+
+What are Plugins? - What Loaders can't do
+
+```
+While loaders are used to transform certain types of modules, plugins can be leveraged
+to perform a wider range of tasks like bundle optimization, asset management and injection of
+environment variables.
+```
+
+- Also to implement basically the index.html properly we need the HtmlWebPackPlugin -> Dinamyc reference
 - app.use(express.static("src/client"));
 - error on my code: app.use(express.static("dist")); // was what we wanted
 

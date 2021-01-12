@@ -1,7 +1,10 @@
 const express = require("express");
 const app = express();
 
-app.use(express.static("src/client"));
+// Change: Change the static folder for webpack dist files
+// app.use(express.static("src/client"));
+
+app.use(express.static("dist"));
 
 // try to serve at root URL the file stored in client views index html
 // __dirname: env variable that tells the absolute path containing current path
