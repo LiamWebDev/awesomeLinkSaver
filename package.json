@@ -8,8 +8,9 @@
     "compile:sass": "node-sass ./sass/main.scss ./styles/main.css",
     "build:sass": "npm run compile:sass",
     "dev:watch": "node-sass ./sass/main.scss ./styles/main.css -w",
-    "start": "node src/server/index.js",
-    "build": "webpack"
+    "start": "nodemon src/server/index.js",
+    "build": "webpack",
+    "build:watch": "webpack --watch"
   },
   "repository": {
     "type": "git",
@@ -26,8 +27,12 @@
     "@babel/core": "^7.12.9",
     "@babel/preset-env": "^7.12.7",
     "babel-loader": "^8.2.2",
+    "css-loader": "^5.0.1",
     "html-webpack-plugin": "^4.5.0",
-    "node-sass": "^5.0.0"
+    "node-sass": "^5.0.0",
+    "nodemon": "^2.0.7",
+    "sass-loader": "^10.1.1",
+    "style-loader": "^2.0.0"
   },
   "dependencies": {
     "express": "^4.17.1",

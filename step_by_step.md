@@ -81,6 +81,7 @@ environment variables.
 - app.use(express.static("src/client"));
 - error on my code: app.use(express.static("dist")); // was what we wanted
 
-# final step
+# step 4
 
-- move the code link awesome to this
+- CSS & SCSS
+- npm i -D style-loader node-sass css-loader sass-loader

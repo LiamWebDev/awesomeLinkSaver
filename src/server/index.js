@@ -10,7 +10,8 @@ app.use(express.static("dist"));
 // __dirname: env variable that tells the absolute path containing current path
 app.get("/", (req, res) => {
   // res.sendFile("/client/views/index.html", { root: __dirname + "/.." });
-  res.sendFile("dist/index.html", { root: __dirname + "/../../" });
+  // res.sendFile("dist/index.html", { root: __dirname + "/../../" });
+  res.sendFile("dist/index.html");
 });
 
 // return json data from the URL
