@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="/styles/header.css">
     <link rel="stylesheet" href="/styles/form.css">
     <link rel="stylesheet" href="/styles/footer.css"> -->
+  </head>
   <body>
     <header>
       <div>Logo</div>
@@ -20,7 +21,7 @@
 
     <main>
       <section>
-        <form  onsubmit="return handleSubmit(event)">
+        <form id="form">
           <input
             id="name"
             type="text"
@@ -28,13 +29,7 @@
             value=""
             placeholder="Name"
           />
-          <input
-            type="submit"
-            name=""
-            value="submit"
-            onclick="return handleSubmit(event)"
-            onsubmit="return handleSubmit(event)"
-          />
+          <input type="submit" name="" value="submit" />
         </form>
       </section>
 

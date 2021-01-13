@@ -1,7 +1,8 @@
+import { checkForName } from "./nameChecker";
+
 function handleSubmit(event) {
   event.preventDefault();
 
-  // check what text was put into the form field
   let formText = document.getElementById("name").value;
   checkForName(formText);
 
@@ -12,5 +13,5 @@ function handleSubmit(event) {
       document.getElementById("results").innerHTML = res.message;
     });
 }
-
+checkForName("Paco");
 export { handleSubmit };
