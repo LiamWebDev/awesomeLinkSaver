@@ -16,16 +16,16 @@ const STATE = {
   },
   tags: {
     https: {
-      tiles: ["tile1", "tile3"],
+      tiles: ["tile1"],
     },
     loops: {
-      tiles: ["tile2"],
+      tiles: ["tile2", "tile3"],
     },
     arrays: {
       tiles: ["tile3"],
     },
     javascript: {
-      tiles: ["tile2"],
+      tiles: ["tile2", "tile1"],
     },
   },
   exceptions: ["to", "the", "best"],
@@ -112,6 +112,7 @@ const existTagsParent = document.getElementById("exist-tags");
 const errorDiv = document.querySelector("div#error-msg");
 const domainTagDiv = document.querySelector("div#domain-tag");
 const favIcon = document.getElementById("fav-img");
+const tagTotalsDiv = document.querySelector(".tag-totals");
 let favouriteValue = false;
 
 function init() {
@@ -290,6 +291,7 @@ function clearFields() {
   removeAllChildNodes(tagsParent);
   removeAllChildNodes(existTagsParent);
   removeAllChildNodes(domainTagDiv);
+  removeAllChildNodes(tagTotalsDiv);
   Utils.toggleElementVisibility("submit-btn", false);
   Utils.toggleElementVisibility("clear", false);
   Utils.toggleElementVisibility("error-msg", false);
@@ -340,13 +342,15 @@ function createTile(title, url, favourite, id) {
 }
 
 function submit() {
-  storeTags();
-  createTile(titleInput.value, linkInput.value, favouriteValue);
+  const tileId = storeTags();
+  createTile(titleInput.value, linkInput.value, favouriteValue, tileId);
   clearFields();
   Utils.toggleElementVisibility("title-input", false);
   setFocusLinkInput();
   tileDatasetEventListerner();
   favIconEventListener();
+  showLatestTags();
+  console.log("Tags: ", STATE.tags);
 }
 
 function pathIntoTitleInput(paste) {
@@ -360,12 +364,16 @@ function pathIntoTitleInput(paste) {
   }
 }
 
+/**
+ * @returns {string} - The id of thew new tile for UI purpsoses
+ */
 function storeTags() {
   const currentDomain = document.getElementById("domain-tag").innerHTML;
   const url = linkInput.value;
   const title = titleInput.value;
   let newTags = document.getElementsByClassName("tagged");
   let existTags = document.getElementsByClassName("exist-tagged");
+
   let tileNo = Object.keys(STATE.tiles).length + 1;
   let newTile = "tile" + tileNo;
   const now = new Date().getTime();
@@ -381,25 +389,19 @@ function storeTags() {
     favourite: favouriteValue,
   };
 
-  // adds new tags to tags object
-  // and adds new tags to new tile object
-  for (var i = 0; i < newTags.length; i++) {
-    newTagProp = newTags[i].textContent;
-    STATE.tags[newTagProp] = { tiles: [] };
+  const allTags = mergeArrays(Array.from(newTags), Array.from(existTags));
+
+  for (var i = 0; i < allTags.length; i++) {
+    newTagProp = allTags[i].textContent;
+    if (!STATE.tags[newTagProp]) {
+      STATE.tags[newTagProp] = { tiles: [] };
+    }
     STATE.tags[newTagProp].tiles.push(newTile);
     STATE.tiles[newTile].tags.push(newTagProp);
   }
-
-  // adds new tile to existing tag object
-  // and adds tag to new tile object
-  for (var i = 0; i < existTags.length; i++) {
-    existTagProp = existTags[i].textContent;
-    STATE.tags[existTagProp].tiles.push(newTile);
-    STATE.tiles[newTile].tags.push(existTagProp);
-  }
-
   // creates or updates domain object in state
   updateDomainInState(currentDomain, newTile);
+  return newTile;
 }
 
 /**
@@ -428,6 +430,32 @@ function checkURL(link) {
   return false;
 }
 
+const showLatestTags = () => {
+  // const totalsArray = [];
+  // Object.entries(STATE.tags).map(([tag, value]) => {
+  //   totalsArray.push({ Tag: tag, Qty: value.tiles.length });
+  // });
+  // totalsArray.sort((a, b) => b.Qty - a.Qty);
+
+  const totalsArray = Object.entries(STATE.tags)
+    .reduce((acc, [tag, value]) => {
+      return acc.concat({ Tag: tag, Qty: value.tiles.length });
+    }, [])
+    .sort((a, b) => b.Qty - a.Qty);
+
+  for (const tag of totalsArray) {
+    const tagEntry =
+      '<div class="tile-container"><div class="tile"><div class="tag-qty">' +
+      tag.Qty +
+      '</div></div><div class="title"><p>' +
+      tag.Tag +
+      "</p></div></div>";
+    const tagContainer = document.querySelector(".tag-totals");
+    tagContainer.insertAdjacentHTML("beforeend", tagEntry);
+  }
+};
+showLatestTags();
+
 /**
  * Updates the favourite property in tile objects
  * @param {string} id - The data-id value refering to the tile object key, against a star icon
@@ -436,3 +464,21 @@ function checkURL(link) {
 function favStatusUpdate(id, currFav) {
   STATE.tiles[id].favourite = currFav ? false : true;
 }
+
+const mergeArrays = (arrA, arrB) => [
+  ...arrA,
+  ...arrB.filter((el) => !arrA.includes(el)),
+];
+
+// Other ways of merging
+
+// const concatArrays = (arrA, arrB) => [...arrA, ...arrB];
+// const mergeArrays1 = (arrA, arrB) =>
+//   concatArrays(
+//     arrA,
+//     arrB.filter((el) => !arrA.includes(el))
+//   );
+
+// const mergeArrays2 = (arrA, arrB) => [...new Set([...arrA, ...arrB])];
+
+// const mergeArrays3 = (arrA, arrB) => [...new Set(concatArrays(arrA, arrB))];

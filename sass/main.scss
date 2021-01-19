@@ -317,3 +317,25 @@ h2 {
 .tile-container {
   cursor: pointer;
 }
+
+.tag-totals {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin-top: 50px;
+
+  .tag-qty {
+    position: relative;
+    height: 30px;
+    width: 30px;
+    background-color: red;
+    text-align: center;
+    top: -5px;
+    border-radius: 16px;
+    left: -13px;
+    font-size: 22px;
+    font-family: verdana;
+    color: white;
+  }
+}
