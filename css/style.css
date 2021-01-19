@@ -1,0 +1,22 @@
+/* SCSS HEX */
+/* SCSS RGB */
+/* SCSS Gradient */
+*,
+*::after,
+*::before {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit; }
+
+body {
+  box-sizing: border-box; }
+
+html {
+  font-size: 62.5%; }
+
+body {
+  font-family: "Lato", sans-serif;
+  font-weight: 400px;
+  line-height: 1.7;
+  padding: 3rem;
+  color: #777; }

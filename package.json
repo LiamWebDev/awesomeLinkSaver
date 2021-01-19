@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "node-sass ./sass/main.scss ./css/style.css",
+    "compile:sass": "npm run build -- -w"
   },
   "repository": {
     "type": "git",
@@ -16,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/LiamWebDev/awesomeLinkSaver/issues"
   },
-  "homepage": "https://github.com/LiamWebDev/awesomeLinkSaver#readme"
+  "homepage": "https://github.com/LiamWebDev/awesomeLinkSaver#readme",
+  "devDependencies": {
+    "node-sass": "^5.0.0"
+  }
 }
