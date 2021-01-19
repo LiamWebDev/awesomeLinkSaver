@@ -1,9 +1,12 @@
 /* globals Utils */
 const STATE = {
+  config: {
+    order: "descending",
+  },
   domains: {
     "www.reddit.co.uk": {
       domain: "www.reddit.co.uk",
-      tiles: ["tile1"],
+      tiles: ["a", "b", "tile3", "tile1", "tile4", "tile5"],
     },
     "medium.com": {
       domain: "medium.com",
@@ -46,7 +49,7 @@ const STATE = {
         "https://medium.com/@js_tut/the-complete-guide-to-loops-cfa6522157e9",
       title: "The Complete Guide To Loops",
       tags: ["loops", "guide", "javascript"],
-      timestamp: 1603235376921,
+      timestamp: 1603235293105,
       favourite: true,
     },
     tile3: {
@@ -55,7 +58,7 @@ const STATE = {
       url: "https://www.youtube.com/video-example",
       title: "YouTube Video Article",
       tags: ["https", "arrays"],
-      timestamp: 1603235456821,
+      timestamp: 1603235293106,
       favourite: false,
     },
   },
@@ -222,9 +225,9 @@ function favIconEventListener() {
   document.querySelectorAll(".favs-icon").forEach((star) => {
     star.addEventListener("click", (e) => {
       e.stopImmediatePropagation();
-      console.log("star: ", star);
       const { favourite } = star.dataset;
       const { id } = star.dataset;
+
       Utils.toggleFavouriteStatus(favourite, star);
       favStatusUpdate(id, Boolean(favourite));
     });
@@ -323,22 +326,30 @@ function createTile(title, url, favourite, id) {
       '">';
   } else {
     favImg =
-      '<img class="favs-icon" src="./assets/img/star-empty-icon.png" data-favourite="false" data-id="' +
+      '<img class="favs-icon" src="./assets/img/star-empty-icon.png" data-favourite="" data-id="' +
       id +
       '">';
   }
+
+  binImg =
+    '<img class="bin" src="./assets/img/bin-icon.webp" data-id="' + id + '">';
 
   tileDiv =
     '<div class="tile-container" data-url="' +
     url +
     '"><div class="tile">' +
     favImg +
+    binImg +
     '</div><div class="title"><a href=" ' +
     url +
     '" target="_blank"><p>' +
     title +
     "</p></a></div></div>";
-  document.getElementById("tiles").innerHTML += tileDiv;
+  // document.getElementById("tiles").innerHTML += tileDiv;
+  const insertAt =
+    STATE.config.order === "descending" ? "afterbegin" : "beforeend";
+  document.getElementById("tiles").insertAdjacentHTML(insertAt, tileDiv);
+  // afterbegin
 }
 
 function submit() {
@@ -349,8 +360,7 @@ function submit() {
   setFocusLinkInput();
   tileDatasetEventListerner();
   favIconEventListener();
-  showLatestTags();
-  console.log("Tags: ", STATE.tags);
+  showTagsByTotal();
 }
 
 function pathIntoTitleInput(paste) {
@@ -407,16 +417,19 @@ function storeTags() {
 /**
  * Retrieves the tiles from STATE and prints them on the UI on startup
  */
-function printExistingTiles() {
+function printLatestTiles() {
   // Loop over all the STATE.tiles values
-  for (const tile of Object.values(STATE.tiles)) {
+  const orderedTiles = Object.values(STATE.tiles).sort(
+    (a, b) => b.timestamp - a.timestamp
+  );
+  for (const tile of orderedTiles) {
     const { title, url, favourite, id } = tile;
     createTile(title, url, favourite, id);
   }
   tileDatasetEventListerner();
   favIconEventListener();
 }
-printExistingTiles();
+printLatestTiles();
 
 /**
  * Checks whether the pasted URL already exists in the tiles object
@@ -430,13 +443,7 @@ function checkURL(link) {
   return false;
 }
 
-const showLatestTags = () => {
-  // const totalsArray = [];
-  // Object.entries(STATE.tags).map(([tag, value]) => {
-  //   totalsArray.push({ Tag: tag, Qty: value.tiles.length });
-  // });
-  // totalsArray.sort((a, b) => b.Qty - a.Qty);
-
+const showTagsByTotal = () => {
   const totalsArray = Object.entries(STATE.tags)
     .reduce((acc, [tag, value]) => {
       return acc.concat({ Tag: tag, Qty: value.tiles.length });
@@ -452,9 +459,13 @@ const showLatestTags = () => {
       "</p></div></div>";
     const tagContainer = document.querySelector(".tag-totals");
     tagContainer.insertAdjacentHTML("beforeend", tagEntry);
+    // document.getElementById("tag-totals-container").appendChild(tagEntry);
+    // document
+    //   .getElementById("tag-totals-container")
+    //   .insertAdjacentHTML("beforeend", tagEntry);
   }
 };
-showLatestTags();
+showTagsByTotal();
 
 /**
  * Updates the favourite property in tile objects
@@ -470,15 +481,54 @@ const mergeArrays = (arrA, arrB) => [
   ...arrB.filter((el) => !arrA.includes(el)),
 ];
 
-// Other ways of merging
+/**
+ * Deletes the tile reference from the appropriate objects
+ * @param {string} tileRef - The data-id value refering to tile object id
+ */
+function deleteTile(obj, tileRef) {
+  console.log("tileRef: ", tileRef);
 
-// const concatArrays = (arrA, arrB) => [...arrA, ...arrB];
-// const mergeArrays1 = (arrA, arrB) =>
-//   concatArrays(
-//     arrA,
-//     arrB.filter((el) => !arrA.includes(el))
-//   );
+  // Show UI changes
+  const tileContainer = obj.parentNode.parentNode;
+  const prevDisplay = tileContainer.style.display;
+  tileContainer.style.display = "none";
 
-// const mergeArrays2 = (arrA, arrB) => [...new Set([...arrA, ...arrB])];
+  try {
+    const tile = STATE.tiles[tileRef];
 
-// const mergeArrays3 = (arrA, arrB) => [...new Set(concatArrays(arrA, arrB))];
+    // Delete STATE domains
+    let index = STATE.domains[tile.domain].tiles.indexOf(tile.id);
+    STATE.domains[tile.domain].tiles.splice(index, 1);
+
+    // Delete STATE tags
+    tile.tags.forEach((tag) => {
+      if (STATE.tags[tag]) {
+        index = STATE.tags[tag].tiles.indexOf(tile.id);
+        STATE.tags[tag].tiles.splice(index, 1);
+      }
+    });
+
+    // Delete STATE Tile
+    delete STATE.tiles[tileRef];
+
+    // Delete UI
+    tileContainer.remove();
+  } catch (error) {
+    console.log("errror happened: ", error);
+    tileContainer.style.display = prevDisplay;
+  }
+}
+
+/**
+ * Event listener for bin icon that deletes relevant objects and properties
+ */
+function deleteEventListener() {
+  document.querySelectorAll(".bin").forEach((bin) => {
+    bin.addEventListener("click", (e) => {
+      e.stopImmediatePropagation();
+      const { id } = bin.dataset;
+      deleteTile(bin, id);
+    });
+  });
+}
+deleteEventListener();
