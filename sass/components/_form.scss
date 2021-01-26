@@ -1,0 +1,32 @@
+.form {
+  &__input {
+    font-size: 1.25rem;
+    font-family: inherit;
+    color: inherit;
+    padding: 1rem 1.5rem;
+    border-radius: 0.8rem;
+    border: 1px solid $color-text-primary;
+    display: block;
+    // transition: all 0.3s;
+
+    &:focus {
+      outline: none;
+      border: 2px solid $color-green-light-1;
+      // form__input:focus:invalid
+      &:invalid {
+        border: 2px solid $flame;
+      }
+    }
+  }
+}
+
+// TODOS:
+
+/* 
+
+- Create a border form-> Show it in the middle of the website (both horizontal & vertical)
+- Have a background color.
+- Have a border (radius also)
+- Add some nice box-shadow to that form
+- Make the main input and the submit bottom be inline on the form and occupy most of the width
+*/
