@@ -26,6 +26,9 @@ body {
   font-size: 1.6rem;
   display: inline-block;
   border-radius: 0.8rem;
+  background-color: #eb5e28;
+  border: 1px solid black;
+  color: white;
   cursor: pointer;
   transition: all 0.2s;
   letter-spacing: 0.1rem; }
