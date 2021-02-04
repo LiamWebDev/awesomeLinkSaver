@@ -1,11 +1,8 @@
-// Define main variables
-
 const DOM_ELEMENTS = {
   form: null,
   link: null,
   analyzeBtn: null,
 }
-// let form = null;
 
 const getDOMElements = () => {
   DOM_ELEMENTS.form = document.getElementById("newUrlForm");
@@ -14,7 +11,6 @@ const getDOMElements = () => {
 }
 
 function addEventListeners() {
-  // TODO: check to make this work on HTML tags
   DOM_ELEMENTS.form.addEventListener("submit", (e) => onSubmit(e));
   DOM_ELEMENTS.link.addEventListener("input", (e) => onLinkInput(e))
 }
@@ -30,7 +26,6 @@ init();
 // OTHER FUNCTION:
 function onSubmit(event) {
   event.preventDefault();
-  console.log("on Submit: ", event);
   const linkValue = DOM_ELEMENTS.link.value;
   const isValid = isValidURL(linkValue);
   if (!isValid) {
@@ -39,12 +34,11 @@ function onSubmit(event) {
     console.log(`The text ${linkValue} is a proper URL`);
   }
 
-  // TODO: 1 get the text introduced on the input
+  // 1 get the text introduced on the input
   // TODO: 2 - split into tags 
   //  TODO: 3 - showing "fields": title and "save".
   //  Suggest a title?
   // TODO: 4 - manage the tags. 
-
 
 }
 
