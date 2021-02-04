@@ -22,30 +22,21 @@
       transform: scale(1.01) !important;
       box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
     }
+
+    &.error {
+      border: 2px solid $flame;
+    }
   }
-}
-
-h1 {
-  width: 400px;
-  margin: 0 auto;
-  font-size: 2.3em;
-}
-
-.panel {
-  width: 40%;
-  margin: 0 auto;
-  padding: 4rem;
-  border-radius: 2rem;
-  background-color: $manatee;
 }
 
 // TODOS:
 
 /* 
 
-- Create a border form-> Show it in the middle of the website (both horizontal & vertical)
-- Have a background color.
-- Have a border (radius also)
+CSS
+===
+- More padding between the title and the input
+- Bigger font for the title
 - Add some nice box-shadow to that form
-- Make the main input and the submit bottom be inline on the form and occupy most of the width
+- Center the input + button inside panel
 */
