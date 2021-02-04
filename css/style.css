@@ -43,7 +43,8 @@ body {
   .btn--primary {
     background-color: #eb5e28;
     border: 1px solid black;
-    color: white; }
+    color: white;
+    margin-left: 20px; }
   .btn--secondary {
     background-color: #44633f;
     border: 1px solid black;
@@ -60,9 +61,34 @@ body {
   padding: 1rem 1.5rem;
   border-radius: 0.8rem;
   border: 1px solid #777;
-  display: block; }
+  display: inline;
+  width: 80%; }
   .form__input:focus {
     outline: none;
     border: 2px solid #0bf59a; }
     .form__input:focus:invalid {
       border: 2px solid #eb5e28; }
+  .form__input:hover {
+    transform: scale(1.01) !important;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3); }
+
+h1 {
+  width: 400px;
+  margin: 0 auto;
+  font-size: 2.3em; }
+
+.panel {
+  width: 40%;
+  margin: 0 auto;
+  padding: 4rem;
+  border-radius: 2rem;
+  background-color: #8d99ae; }
+
+/* 
+
+- Create a border form-> Show it in the middle of the website (both horizontal & vertical)
+- Have a background color.
+- Have a border (radius also)
+- Add some nice box-shadow to that form
+- Make the main input and the submit bottom be inline on the form and occupy most of the width
+*/
