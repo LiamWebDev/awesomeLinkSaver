@@ -21,24 +21,44 @@
         button
         
       </div> -->
-        <input
-          class="form__input"
-          type="text"
-          name="link"
-          id="link"
-          value=""
-          placeholder="Add your link ..."
-          required
-          hasError
-        />
-        <button
-          id="js-analyze-btn"
-          class="btn btn--primary"
-          type="submit"
-          disabled
+
+        <!-- MAIN INPUT  -->
+        <div class="form__main-info-container">
+          <input
+            class="form__input"
+            type="text"
+            name="link"
+            id="link"
+            value=""
+            placeholder="Add your link ..."
+            required
+            hasError
+          />
+          <button
+            id="js-analyze-btn"
+            class="btn btn--primary"
+            type="submit"
+            disabled
+          >
+            Analyze
+          </button>
+        </div>
+        <!-- SECONDARY INPUT -->
+        <div
+          class="form__extra-info-container hidden"
+          id="js-form__extra-info-container"
         >
-          Save
-        </button>
+          <input
+            class="form__input"
+            type="text"
+            name="title"
+            id="title"
+            value=""
+            placeholder="Provide a title for the link"
+          />
+
+          <button id="js-save-btn" class="btn btn--primary">Save</button>
+        </div>
         <!-- <input
         class="form__input"
         type="text"

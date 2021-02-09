@@ -364,10 +364,10 @@ function submit() {
 }
 
 function pathIntoTitleInput(paste) {
-  let reg1 = /\/([^\/]+)\/?$/;
-  pathArr = paste.match(reg1);
-  let reg2 = /\w+/g;
-  titleArray = pathArr[1].match(reg2);
+  const regPathname = /\/([^\/]+)\/?$/;
+  pathArr = paste.match(regPathname);
+  const regWord = /\w+/g;
+  titleArray = pathArr[1].match(regWord);
   for (var i = 0; i < titleArray.length; i++) {
     titleCapitalWord = Utils.capitalizeString(titleArray[i]);
     titleInput.value += titleCapitalWord + " ";
