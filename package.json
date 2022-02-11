@@ -21,6 +21,6 @@
   },
   "homepage": "https://github.com/LiamWebDev/awesomeLinkSaver#readme",
   "devDependencies": {
-    "node-sass": "^5.0.0"
+    "node-sass": "^7.0.0"
   }
 }
